@@ -30,17 +30,40 @@
         #add-product-form {
             display: none;
             margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            max-width: 400px;
         }
-        #add-product-form input {
-            display: block;
-            margin-bottom: 10px;
-            padding: 8px;
+        #add-product-form table {
             width: 100%;
         }
+        #add-product-form td {
+            padding: 5px;
+        }
+        #add-product-form input {
+            width: calc(100% - 10px);
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
         #add-product-form button {
-            padding: 10px 15px;
-            font-size: 16px;
+            margin-top: 10px;
+            padding: 8px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
+        }
+        #save-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #cancel-btn {
+            background-color: #f44336;
+            color: white;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -65,15 +88,15 @@
     <button id="add-product-btn">Thêm sản phẩm</button>
 
     <!-- Form Thêm sản phẩm -->
-    <div id="add-product-form" style="display: none; margin-top: 20px;">
-        <h2>Thêm sản phẩm mới</h2>
+    <div id="add-product-form">
+        <h2 style="text-align: center; margin-bottom: 15px;">Thêm sản phẩm mới</h2>
         <table>
             <tr>
                 <td><label for="id">ID:</label></td>
                 <td><input type="text" id="id" placeholder="ID sản phẩm (tự động)" disabled></td>
             </tr>
             <tr>
-                <td><label for="name">Tên sản phẩm:</label></td>
+                <td><label for="name">Tên:</label></td>
                 <td><input type="text" id="name" placeholder="Tên sản phẩm" required></td>
             </tr>
             <tr>
@@ -89,8 +112,10 @@
                 <td><input type="text" id="warranty" placeholder="Bảo hành" required></td>
             </tr>
         </table>
-        <button id="save-btn">Lưu sản phẩm</button>
-        <button id="cancel-btn">Hủy</button>
+        <div style="text-align: center;">
+            <button id="save-btn">Lưu</button>
+            <button id="cancel-btn">Hủy</button>
+        </div>
     </div>
 
     <script>
@@ -115,8 +140,9 @@
 
         // Hiển thị form thêm sản phẩm
         document.getElementById('add-product-btn').addEventListener('click', () => {
-            // Tạo ID tự động cho sản phẩm mới
-            const newId = 'PROD' + Date.now();
+            // Tạo ID tự động cho sản phẩm mới (dạng PROD1050)
+            const randomId = Math.floor(1000 + Math.random() * 9000); // Tạo số ngẫu nhiên từ 1000 đến 9999
+            const newId = 'PROD' + randomId;
             document.getElementById('id').value = newId;
 
             // Hiển thị form
