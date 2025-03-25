@@ -21,6 +21,10 @@ app.get('/addProducts', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/pages/addProducts.html'));
 });
 
+app.get('/deleteProducts', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/pages/deleteProducts.html'));
+});
+
 // API để thêm sản phẩm mới
 app.post('/api/sanpham', (req, res) => {
     const { name, price, brand, warranty } = req.body;
@@ -41,6 +45,20 @@ app.post('/api/sanpham', (req, res) => {
 
     // Trả về sản phẩm vừa thêm
     res.json(newProduct);
+});
+
+// API để xóa sản phẩm
+app.delete('/api/sanpham/:id', (req, res) => {
+    const productId = req.params.id;
+
+    // Tìm và xóa sản phẩm khỏi danh sách
+    const productIndex = sanPham.findIndex(product => product.id === productId);
+    if (productIndex !== -1) {
+        sanPham.splice(productIndex, 1);
+        res.status(200).send({ message: 'Sản phẩm đã được xóa thành công!' });
+    } else {
+        res.status(404).send({ message: 'Không tìm thấy sản phẩm!' });
+    }
 });
 
 // Route chính để trả về file index.html trong thư mục public/pages
