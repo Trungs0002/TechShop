@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cập nhật sản phẩm</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 8px;
+        border: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #f4f4f4;
+      }
+
+      td button {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+
+      td button:hover {
+        background-color: #d32f2f;
+      }
+
+      /* Style cho form sửa sản phẩm */
+      #updateFormContainer {
+        width: 50%;
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        max-width: 400px;
+      }
+
+      #updateProductForm table {
+        width: 100%;
+      }
+
+      #updateProductForm td {
+        padding: 10px;
+      }
+
+      #updateProductForm input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+      }
+
+      #updateProductForm button {
+        padding: 10px 20px;
+        /* background-color: #4caf50; */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+      }
+
+      #submitUpdate {
+        background-color: #4caf50;
+      }
+
+      #submitUpdate:hover {
+        background-color: #45a049;
+      }
+
+      #cancelUpdate {
+        background-color: #f44336;
+        margin-left: 10px;
+      }
+
+      #cancelUpdate:hover {
+        background-color: #d32f2f;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="productListContainer">
+      <h1>Danh sách sản phẩm</h2>
+      <table id="productTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên sản phẩm</th>
+            <th>Giá</th>
+            <th>Thương hiệu</th>
+            <th>Bảo hành</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody id="productList">
+          <!-- Danh sách sản phẩm sẽ được thêm vào đây bằng JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <div id="updateFormContainer" style="display: none">
+      <h2>Cập nhật thông tin sản phẩm</h2>
+      <form id="updateProductForm">
+        <input type="hidden" id="productId" />
+        <table>
+          <tr>
+            <td>Tên sản phẩm:</td>
+            <td><input type="text" id="productName" required /></td>
+          </tr>
+          <tr>
+            <td>Giá:</td>
+            <td><input type="number" id="productPrice" required /></td>
+          </tr>
+          <tr>
+            <td>Thương hiệu:</td>
+            <td><input type="text" id="productBrand" required /></td>
+          </tr>
+          <tr>
+            <td>Bảo hành:</td>
+            <td><input type="text" id="productWarranty" required /></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <button type="submit" id="submitUpdate">Lưu thay đổi</button>
+              <button type="button" id="cancelUpdate">Hủy</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+    <script>
+      // Tải danh sách sản phẩm khi trang được load
+      document.addEventListener("DOMContentLoaded", function () {
+        loadProducts();
+
+        // Xử lý sự kiện submit form cập nhật
+        document.getElementById("updateProductForm").addEventListener("submit", function (e) {
+          e.preventDefault();
+          updateProduct();
+        });
+
+        // Xử lý sự kiện nút hủy
+        document.getElementById("cancelUpdate").addEventListener("click", function () {
+          document.getElementById("updateFormContainer").style.display = "none";
+        });
+      });
+
+      // Hàm tải danh sách sản phẩm từ server
+      function loadProducts() {
+        fetch("/api/sanpham")
+          .then((response) => response.json())
+          .then((products) => {
+            const productList = document.getElementById("productList");
+            productList.innerHTML = "";
+
+            products.forEach((product) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `<td>${product.id}</td>
+                 <td>${product.name}</td>
+                 <td>${product.price}</td>
+                 <td>${product.brand}</td>
+                 <td>${product.warranty}</td>
+                 <td><button onclick="showUpdateForm('${product.id}')">Sửa</button></td>`;
+              productList.appendChild(row);
+            });
+          })
+          .catch((error) => {
+            console.error("Lỗi khi tải danh sách sản phẩm:", error);
+            alert("Đã xảy ra lỗi khi tải danh sách sản phẩm!");
+          });
+      }
+
+      // Hàm hiển thị form cập nhật với thông tin sản phẩm đã chọn
+      function showUpdateForm(productId) {
+        fetch(`/api/sanpham/${productId}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Không tìm thấy sản phẩm");
+            }
+            return response.json();
+          })
+          .then((product) => {
+            document.getElementById("productId").value = product.id;
+            document.getElementById("productName").value = product.name;
+            document.getElementById("productPrice").value = product.price;
+            document.getElementById("productBrand").value = product.brand;
+            document.getElementById("productWarranty").value = product.warranty;
+
+            document.getElementById("updateFormContainer").style.display = "block";
+          })
+          .catch((error) => {
+            console.error("Lỗi khi tải thông tin sản phẩm:", error);
+            alert("Không thể tải thông tin sản phẩm!");
+          });
+      }
+
+      // Hàm gửi yêu cầu cập nhật sản phẩm
+      function updateProduct() {
+        const productId = document.getElementById("productId").value;
+        const updatedProduct = {
+          name: document.getElementById("productName").value,
+          price: parseInt(document.getElementById("productPrice").value),
+          brand: document.getElementById("productBrand").value,
+          warranty: document.getElementById("productWarranty").value,
+        };
+
+        fetch(`/api/sanpham/${productId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedProduct),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Cập nhật thất bại");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            alert("Cập nhật sản phẩm thành công!");
+            document.getElementById("updateFormContainer").style.display = "none";
+            loadProducts(); // Tải lại danh sách sản phẩm
+          })
+          .catch((error) => {
+            console.error("Lỗi khi cập nhật sản phẩm:", error);
+            alert("Đã xảy ra lỗi khi cập nhật sản phẩm!");
+          });
+      }
+    </script>
+  </body>
+</html>
