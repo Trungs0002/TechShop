@@ -38,8 +38,7 @@
       td button:hover {
         background-color: #d32f2f;
       }
-
-      /* Style cho form sửa sản phẩm */
+      /* Sua products */
       #updateFormContainer {
         width: 50%;
         margin-top: 20px;
@@ -97,8 +96,9 @@
     </style>
   </head>
   <body>
+    <!-- Tao bang -->
     <div id="productListContainer">
-      <h1>Danh sách sản phẩm</h2>
+      <h1>Danh sách sản phẩm</h1>
       <table id="productTable">
         <thead>
           <tr>
@@ -111,11 +111,12 @@
           </tr>
         </thead>
         <tbody id="productList">
-          <!-- Danh sách sản phẩm sẽ được thêm vào đây bằng JavaScript -->
+          <!-- Khoi tao the tbody productList de dung js -->
         </tbody>
       </table>
     </div>
 
+    <!-- Tao Form cap nhat -->
     <div id="updateFormContainer" style="display: none">
       <h2>Cập nhật thông tin sản phẩm</h2>
       <form id="updateProductForm">
@@ -148,39 +149,23 @@
     </div>
 
     <script>
-      // Tải danh sách sản phẩm khi trang được load
-      document.addEventListener("DOMContentLoaded", function () {
-        loadProducts();
-
-        // Xử lý sự kiện submit form cập nhật
-        document.getElementById("updateProductForm").addEventListener("submit", function (e) {
-          e.preventDefault();
-          updateProduct();
-        });
-
-        // Xử lý sự kiện nút hủy
-        document.getElementById("cancelUpdate").addEventListener("click", function () {
-          document.getElementById("updateFormContainer").style.display = "none";
-        });
-      });
-
-      // Hàm tải danh sách sản phẩm từ server
+      // Ham tai danh sach san pham tu server
       function loadProducts() {
-        fetch("/api/sanpham")
-          .then((response) => response.json())
+        fetch("/api/sanpham") // Goi api
+          .then((response) => response.json()) // Chuyen du lieu tra ve thanh JSON
           .then((products) => {
             const productList = document.getElementById("productList");
             productList.innerHTML = "";
 
             products.forEach((product) => {
               const row = document.createElement("tr");
-              row.innerHTML = `<td>${product.id}</td>
+              row.innerHTML = `<td>${product.id}</td> 
                  <td>${product.name}</td>
                  <td>${product.price}</td>
                  <td>${product.brand}</td>
                  <td>${product.warranty}</td>
                  <td><button onclick="showUpdateForm('${product.id}')">Sửa</button></td>`;
-              productList.appendChild(row);
+              productList.appendChild(row); // Them dong vao the tbody
             });
           })
           .catch((error) => {
@@ -189,7 +174,7 @@
           });
       }
 
-      // Hàm hiển thị form cập nhật với thông tin sản phẩm đã chọn
+      // Ham hien thi form cap nhat voi thong tin san pham da chon
       function showUpdateForm(productId) {
         fetch(`/api/sanpham/${productId}`)
           .then((response) => {
@@ -199,7 +184,7 @@
             return response.json();
           })
           .then((product) => {
-            document.getElementById("productId").value = product.id;
+            document.getElementById("productId").value = product.id; // Hien thi thong tin san pham len form
             document.getElementById("productName").value = product.name;
             document.getElementById("productPrice").value = product.price;
             document.getElementById("productBrand").value = product.brand;
@@ -213,11 +198,12 @@
           });
       }
 
-      // Hàm gửi yêu cầu cập nhật sản phẩm
+      // Ham gui yeu cau cap nhat san pham
       function updateProduct() {
-        const productId = document.getElementById("productId").value;
+        const productId = document.getElementById("productId").value; // Lay ID san pham
         const updatedProduct = {
-          name: document.getElementById("productName").value,
+          // Tao doi tuong san pham moi
+          name: document.getElementById("productName").value, // Lay thong tin tu form
           price: parseInt(document.getElementById("productPrice").value),
           brand: document.getElementById("productBrand").value,
           warranty: document.getElementById("productWarranty").value,
@@ -226,9 +212,9 @@
         fetch(`/api/sanpham/${productId}`, {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json", // Kieu du lieu gui di
           },
-          body: JSON.stringify(updatedProduct),
+          body: JSON.stringify(updatedProduct), // Du lieu gui di
         })
           .then((response) => {
             if (!response.ok) {
@@ -239,13 +225,29 @@
           .then((data) => {
             alert("Cập nhật sản phẩm thành công!");
             document.getElementById("updateFormContainer").style.display = "none";
-            loadProducts(); // Tải lại danh sách sản phẩm
+            loadProducts();
           })
           .catch((error) => {
             console.error("Lỗi khi cập nhật sản phẩm:", error);
             alert("Đã xảy ra lỗi khi cập nhật sản phẩm!");
           });
       }
+
+      // Tai danh sach san pham khi trang duoc load
+      document.addEventListener("DOMContentLoaded", function () {
+        loadProducts();
+
+        // Xu ly su kien khi click submit trong form cap nhat
+        document.getElementById("updateProductForm").addEventListener("submit", function (e) {
+          e.preventDefault(); // Xoa mac dinh tai lai trang khi click submit
+          updateProduct();
+        });
+
+        // Xu ly su kien khi click nut huy
+        document.getElementById("cancelUpdate").addEventListener("click", function () {
+          document.getElementById("updateFormContainer").style.display = "none";
+        });
+      });
     </script>
   </body>
 </html>

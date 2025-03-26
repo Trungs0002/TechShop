@@ -92,15 +92,16 @@ app.get("/api/sanpham/filter", (req, res) => {
   res.json(filteredProducts);
 });
 
-// Route để trả về file updateProducts.html
+// Route để trả về updateProducts.html
 app.get("/updateProducts", (req, res) => {
   res.sendFile(path.join(__dirname, "public/pages/updateProducts.html"));
 });
 
-// API để lấy thông tin một sản phẩm theo ID
+// API để lấy thông tin một sản phẩm
 app.get("/api/sanpham/:id", (req, res) => {
-  const productId = req.params.id;
-  const product = sanPham.find((item) => item.id === productId);
+  // :id là một route parameter
+  const productId = req.params.id; // Lấy ID
+  const product = sanPham.find((item) => item.id === productId); // Tìm sản phẩm
 
   if (product) {
     res.json(product);
@@ -112,19 +113,20 @@ app.get("/api/sanpham/:id", (req, res) => {
 // API để cập nhật thông tin sản phẩm
 app.put("/api/sanpham/:id", (req, res) => {
   const productId = req.params.id;
-  const { name, price, brand, warranty } = req.body;
+  const { name, price, brand, warranty } = req.body; // Lấy thông tin sản phẩm
 
   // Tìm vị trí sản phẩm trong mảng
   const productIndex = sanPham.findIndex((product) => product.id === productId);
 
   if (productIndex !== -1) {
-    // Cập nhật thông tin sản phẩm
+    // Nếu tìm thấy sản phẩm
     const updatedProduct = { ...sanPham[productIndex] };
 
     if (name) {
-      updatedProduct.name = name;
+      // Nếu có tên sản phẩm mới
+      updatedProduct.name = name; // Cập nhật tên sản phẩm
     } else {
-      updatedProduct.name = sanPham[productIndex].name;
+      updatedProduct.name = sanPham[productIndex].name; // Giữ nguyên tên sản phẩm
     }
 
     if (price !== undefined) {
@@ -146,7 +148,7 @@ app.put("/api/sanpham/:id", (req, res) => {
     }
 
     // Cập nhật sản phẩm trong mảng
-    sanPham[productIndex] = updatedProduct;
+    sanPham[productIndex] = updatedProduct; // Thay thế sản phẩm cũ bằng sản phẩm mới
 
     console.log("Sản phẩm đã được cập nhật:", updatedProduct);
 
