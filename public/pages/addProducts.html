@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,24 +10,30 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        th, td {
+
+        th,
+        td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         th {
             background-color: #f4f4f4;
         }
+
         #add-product-btn {
             margin-top: 20px;
             padding: 10px 15px;
             font-size: 16px;
             cursor: pointer;
         }
+
         #add-product-form {
             display: none;
             margin-top: 20px;
@@ -36,18 +43,22 @@
             background-color: #f9f9f9;
             max-width: 400px;
         }
+
         #add-product-form table {
             width: 100%;
         }
+
         #add-product-form td {
             padding: 5px;
         }
+
         #add-product-form input {
             width: calc(100% - 10px);
             padding: 5px;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+
         #add-product-form button {
             margin-top: 10px;
             padding: 8px 12px;
@@ -56,10 +67,12 @@
             border-radius: 4px;
             cursor: pointer;
         }
+
         #save-btn {
             background-color: #4CAF50;
             color: white;
         }
+
         #cancel-btn {
             background-color: #f44336;
             color: white;
@@ -67,6 +80,7 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Danh sách sản phẩm</h1>
     <table>
@@ -89,7 +103,7 @@
 
     <!-- Form Thêm sản phẩm -->
     <div id="add-product-form">
-        <h2 style="text-align: center; margin-bottom: 15px;">Thêm sản phẩm mới</h2>
+        <h2 style="text-align:center; margin-bottom:15px;">Thêm sản phẩm mới</h2>
         <table>
             <tr>
                 <td><label for="id">ID:</label></td>
@@ -112,14 +126,14 @@
                 <td><input type="text" id="warranty" placeholder="Bảo hành" required></td>
             </tr>
         </table>
-        <div style="text-align: center;">
+        <div style="text-align:center;">
             <button id="save-btn">Lưu</button>
             <button id="cancel-btn">Hủy</button>
         </div>
     </div>
 
     <script>
-        // Gọi API để lấy danh sách sản phẩm
+        // Lấy danh sách sản phẩm từ API
         fetch('/api/sanpham')
             .then(response => response.json())
             .then(data => {
@@ -138,67 +152,59 @@
             })
             .catch(error => console.error('Lỗi khi tải danh sách sản phẩm:', error));
 
-        // Hiển thị form thêm sản phẩm
+        // Hiển thị form thêm sản phẩm với ID tự động
         document.getElementById('add-product-btn').addEventListener('click', () => {
-            // Tạo ID tự động cho sản phẩm mới (dạng PROD1050)
-            const randomId = Math.floor(1000 + Math.random() * 9000); // Tạo số ngẫu nhiên từ 1000 đến 9999
-            const newId = 'PROD' + randomId;
-            document.getElementById('id').value = newId;
-
-            // Hiển thị form
+            const randomId = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('id').value = 'PROD' + randomId;
             document.getElementById('add-product-form').style.display = 'block';
         });
 
-        // Xử lý sự kiện khi nhấn nút "Hủy"
+        // Ẩn form khi nhấn nút Hủy
         document.getElementById('cancel-btn').addEventListener('click', () => {
             document.getElementById('add-product-form').style.display = 'none';
         });
 
-        // Xử lý sự kiện khi nhấn nút "Lưu sản phẩm"
+        // Xử lý lưu sản phẩm mới
         document.getElementById('save-btn').addEventListener('click', () => {
-            // Lấy dữ liệu từ form
+            console.log("Nút Lưu đã được bấm");
+            const id = document.getElementById('id').value;
             const name = document.getElementById('name').value;
             const price = document.getElementById('price').value;
             const brand = document.getElementById('brand').value;
             const warranty = document.getElementById('warranty').value;
 
-            // Kiểm tra dữ liệu đầu vào
             if (!name || !price || !brand || !warranty) {
                 alert('Vui lòng nhập đầy đủ thông tin!');
                 return;
             }
 
-            // Gửi dữ liệu đến API
             fetch('/api/sanpham', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name, price, brand, warranty }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, name, price, brand, warranty })
             })
-                .then(response => response.json())
-                .then(newProduct => {
-                    // Thêm sản phẩm mới vào bảng
-                    const productList = document.getElementById('product-list');
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${newProduct.id}</td>
-                        <td>${newProduct.name}</td>
-                        <td>${newProduct.price.toLocaleString()} VND</td>
-                        <td>${newProduct.brand}</td>
-                        <td>${newProduct.warranty}</td>
-                    `;
-                    productList.appendChild(row);
-
-                    // Ẩn form và reset dữ liệu
-                    document.getElementById('add-product-form').style.display = 'none';
-                    document.getElementById('name').value = '';
-                    document.getElementById('price').value = '';
-                    document.getElementById('brand').value = '';
-                    document.getElementById('warranty').value = '';
-                })
-                .catch(error => console.error('Lỗi khi thêm sản phẩm:', error));
+            .then(response => response.json())
+            .then(newProduct => {
+                console.log("Sản phẩm mới", newProduct);
+                const productList = document.getElementById('product-list');
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${newProduct.id}</td>
+                    <td>${newProduct.name}</td>
+                    <td>${newProduct.price.toLocaleString()} VND</td>
+                    <td>${newProduct.brand}</td>
+                    <td>${newProduct.warranty}</td>
+                `;
+                productList.appendChild(row);
+                document.getElementById('add-product-form').style.display = 'none';
+                document.getElementById('name').value = '';
+                document.getElementById('price').value = '';
+                document.getElementById('brand').value = '';
+                document.getElementById('warranty').value = '';
+            })
+            .catch(error => console.error('Lỗi khi thêm sản phẩm:', error));
         });
     </script>
 </body>
+
 </html>

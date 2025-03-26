@@ -26,25 +26,22 @@ app.get("/deleteProducts", (req, res) => {
 });
 
 // API để thêm sản phẩm mới
-app.post("/api/sanpham", (req, res) => {
-  const { name, price, brand, warranty } = req.body;
+app.post('/api/sanpham', (req, res) => {
+    const { id, name, price, brand, warranty } = req.body;
 
-  // Tạo ID sản phẩm mới
-  const newProduct = {
-    id: "PROD" + Date.now(), // Tạo ID bằng thời gian
-    name,
-    price: parseInt(price),
-    brand,
-    warranty,
-  };
+    // Kiểm tra dữ liệu đầu vào
+    if (!id || !name || !price || !brand || !warranty) {
+        return res.status(400).json({ error: 'Vui lòng cung cấp đầy đủ thông tin sản phẩm!' });
+    }
 
-  // Thêm sản phẩm vào mảng sanPham
-  sanPham.push(newProduct);
+    // Tạo sản phẩm mới
+    const newProduct = { id, name, price, brand, warranty };
 
-  console.log("Sản phẩm mới đã được thêm:", newProduct);
+    // Thêm sản phẩm vào danh sách (giả sử bạn lưu trong một mảng)
+    sanPham.push(newProduct);
 
-  // Trả về sản phẩm vừa thêm
-  res.json(newProduct);
+    // Trả về sản phẩm mới
+    res.status(201).json(newProduct);
 });
 
 // API để xóa sản phẩm
