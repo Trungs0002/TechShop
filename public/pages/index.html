@@ -1,17 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <h1>Web Bán Hàng Điện Tử</h1>
-    <ul>
-      <li><a href="/addProducts">Thêm sản phẩm (Gửi html)</a></li>
-      <li><a href="/fProducts">Tìm và lọc sản phẩm (Gửi html)</a></li>
-      <li><a href="/updateProducts">Cập nhật sản phẩm (Gửi html)</a></li>
-      <li><a href="/deleteProducts">Xóa sản phẩm (Gửi html)</a></li>
-    </ul>
-  </body>
+    <title>Web Bán Hàng Điện Tử</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+        }
+        main {
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        a {
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Web Bán Hàng Điện Tử</h1>
+    </header>
+    <main>
+        <h2>Chức năng</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Chức năng</th>
+                    <th>Mô tả</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="/addProducts">Thêm sản phẩm</a></td>
+                    <td>Thêm sản phẩm mới vào danh sách</td>
+                </tr>
+                <tr>
+                    <td><a href="/fProducts">Tìm và lọc sản phẩm</a></td>
+                    <td>Tìm kiếm và lọc sản phẩm theo tiêu chí</td>
+                </tr>
+                <tr>
+                    <td><a href="/updateProducts">Cập nhật sản phẩm</a></td>
+                    <td>Cập nhật thông tin sản phẩm</td>
+                </tr>
+                <tr>
+                    <td><a href="/deleteProducts">Xóa sản phẩm</a></td>
+                    <td>Xóa sản phẩm khỏi danh sách</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
 </html>
