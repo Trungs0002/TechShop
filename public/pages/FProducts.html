@@ -32,7 +32,6 @@
         <input type="number" id="searchPrice" placeholder="Giá tối đa">
         <input type="text" id="searchBrand" placeholder="Thương hiệu">
         <input type="text" id="searchWarranty" placeholder="Bảo hành">
-        <button type="submit">Tìm kiếm</button>
         <button type="button" id="refresh-btn">Làm mới danh sách</button>
     </form>
 
@@ -56,7 +55,7 @@
 
         // Hàm lấy dữ liệu từ API
         function loadProducts(query = '') {
-            fetch(`/api/sanpham${query}`)
+            fetch(`/api/sanpham`)
                 .then(response => response.json())
                 .then(data => {
                     products = data; // Lưu danh sách để tìm kiếm nhanh
@@ -81,18 +80,17 @@
                 `;
                 productList.appendChild(row);
             });
-        }
-
+        }    
         // Hàm tìm kiếm theo từ đang gõ
         function liveSearch() {
             const name = document.getElementById('searchName').value.toLowerCase();
-            const price = document.getElementById('searchPrice').value;
+            const price = parseFloat(document.getElementById('searchPrice').value); // Chuyển đổi giá trị thành số
             const brand = document.getElementById('searchBrand').value.toLowerCase();
             const warranty = document.getElementById('searchWarranty').value.toLowerCase();
 
             const filtered = products.filter(sp => 
                 (!name || sp.name.toLowerCase().includes(name)) &&
-                (!price || sp.price <= parseFloat(price)) &&
+                (isNaN(price) || sp.price >= price) && // Lọc sản phẩm có giá lớn hơn hoặc bằng
                 (!brand || sp.brand.toLowerCase().includes(brand)) &&
                 (!warranty || sp.warranty.toLowerCase().includes(warranty))
             );
@@ -107,21 +105,6 @@
 
         // Gọi API để tải dữ liệu khi trang được mở
         loadProducts();
-
-   
-
-        // Xử lý sự kiện khi bấm nút "Tìm kiếm"
-        document.getElementById('searchForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Ngăn form gửi request mặc định
-
-            const name = document.getElementById('searchName').value.trim();
-            const price = document.getElementById('searchPrice').value;
-            const brand = document.getElementById('searchBrand').value.trim();
-            const warranty = document.getElementById('searchWarranty').value.trim();
-
-            const query = new URLSearchParams({ name, price, brand, warranty }).toString();
-            loadProducts(`/filter?${query}`);
-        });
 
         // Xử lý nút "Làm mới danh sách"
         document.getElementById('refresh-btn').addEventListener('click', function () {
