@@ -1,151 +1,161 @@
 [
     {
-      "id": "PROD1001",
-      "name": "CPU Intel Core i9",
-      "category": "CPU",
-      "price": 12000000,
-      "brand": "Intel",
-      "warranty": "3 years",
-      "socket": "LGA1700",
-      "cores": 16,
-      "threads": 24,
-      "base_clock": "3.2GHz",
-      "boost_clock": "5.2GHz",
-      "custom_options": {
-        "cooling_solution": ["Stock Fan", "Liquid Cooling"]
-      }
+        "id": "PROD1001",
+        "name": "CPU Intel Core i9",
+        "category": "CPU",
+        "price": 12000000,
+        "brand": "Intel",
+        "warranty": "3 years",
+        "socket": "LGA1700",
+        "cores": 16,
+        "threads": 24,
+        "base_clock": "3.2GHz",
+        "boost_clock": "5.2GHz",
+        "custom_options": {
+            "cooling_solution": ["Stock Fan", "Liquid Cooling"]
+        },
+        "image": ""
     },
     {
-      "id": "PROD1002",
-      "name": "RAM Kingston Fury 32GB",
-      "category": "RAM",
-      "price": 4500000,
-      "brand": "Kingston",
-      "warranty": "5 years",
-      "type": "DDR5",
-      "speed": "6000MHz",
-      "voltage": "1.35V",
-      "latency": "CL36",
-      "heat_spreader": "Aluminum",
-      "color_options": ["Black", "White", "Red"]
+        "id": "PROD1002",
+        "name": "RAM Kingston Fury 32GB",
+        "category": "RAM",
+        "price": 4500000,
+        "brand": "Kingston",
+        "warranty": "5 years",
+        "type": "DDR5",
+        "speed": "6000MHz",
+        "voltage": "1.35V",
+        "latency": "CL36",
+        "heat_spreader": "Aluminum",
+        "color_options": ["Black", "White", "Red"],
+        "image": ""
     },
     {
-      "id": "PROD1003",
-      "name": "SSD Samsung NVMe 2TB",
-      "category": "Storage",
-      "price": 8500000,
-      "brand": "Samsung",
-      "warranty": "5 years",
-      "interface": "PCIe 4.0",
-      "read_speed": "7000MB/s",
-      "write_speed": "5000MB/s",
-      "TBW": "1200TB",
-      "NAND_type": "TLC",
-      "custom_options": {
-        "heatsink": ["Yes", "No"]
-      }
+        "id": "PROD1003",
+        "name": "SSD Samsung NVMe 2TB",
+        "category": "Storage",
+        "price": 8500000,
+        "brand": "Samsung",
+        "warranty": "5 years",
+        "interface": "PCIe 4.0",
+        "read_speed": "7000MB/s",
+        "write_speed": "5000MB/s",
+        "TBW": "1200TB",
+        "NAND_type": "TLC",
+        "custom_options": {
+            "heatsink": ["Yes", "No"]
+        },
+        "image": ""
     },
     {
-      "id": "PROD1004",
-      "name": "VGA NVIDIA RTX 4080",
-      "category": "GPU",
-      "price": 32000000,
-      "brand": "NVIDIA",
-      "warranty": "4 years",
-      "memory": "16GB GDDR6X",
-      "boost_clock": "2.5GHz",
-      "power_consumption": "320W",
-      "ray_tracing": "Yes",
-      "ports": "HDMI, DisplayPort",
-      "color_options": ["Black", "Silver"]
+        "id": "PROD1004",
+        "name": "VGA NVIDIA RTX 4080",
+        "category": "GPU",
+        "price": 32000000,
+        "brand": "NVIDIA",
+        "warranty": "4 years",
+        "memory": "16GB GDDR6X",
+        "boost_clock": "2.5GHz",
+        "power_consumption": "320W",
+        "ray_tracing": "Yes",
+        "ports": "HDMI, DisplayPort",
+        "color_options": ["Black", "Silver"],
+        "image": ""
     },
     {
-      "id": "PROD1005",
-      "name": "Mainboard ASUS ROG Strix Z790",
-      "category": "Motherboard",
-      "price": 9500000,
-      "brand": "ASUS",
-      "warranty": "3 years",
-      "chipset": "Z790",
-      "socket": "LGA1700",
-      "RAM_support": "DDR5",
-      "expansion_slots": "3x PCIe",
-      "power_phases": "16",
-      "networking": "WiFi 6E",
-      "storage_interfaces": "SATA, NVMe"
+        "id": "PROD1005",
+        "name": "Mainboard ASUS ROG Strix Z790",
+        "category": "Motherboard",
+        "price": 9500000,
+        "brand": "ASUS",
+        "warranty": "3 years",
+        "chipset": "Z790",
+        "socket": "LGA1700",
+        "RAM_support": "DDR5",
+        "expansion_slots": "3x PCIe",
+        "power_phases": "16",
+        "networking": "WiFi 6E",
+        "storage_interfaces": "SATA, NVMe",
+        "image": ""
     },
     {
-      "id": "PROD1006",
-      "name": "Nguồn Corsair RM1000e 1000W",
-      "category": "Power Supply",
-      "price": 3200000,
-      "brand": "Corsair",
-      "warranty": "10 years",
-      "efficiency_rating": "80+ Gold",
-      "modular": "Fully Modular",
-      "fan_size": "140mm",
-      "protection": "Over-voltage, Over-current, Short-circuit",
-      "cable_type": "Sleeved",
-      "weight": "1.8kg"
+        "id": "PROD1006",
+        "name": "Nguồn Corsair RM1000e 1000W",
+        "category": "Power Supply",
+        "price": 3200000,
+        "brand": "Corsair",
+        "warranty": "10 years",
+        "efficiency_rating": "80+ Gold",
+        "modular": "Fully Modular",
+        "fan_size": "140mm",
+        "protection": "Over-voltage, Over-current, Short-circuit",
+        "cable_type": "Sleeved",
+        "weight": "1.8kg",
+        "image": ""
     },
     {
-      "id": "PROD1007",
-      "name": "Case NZXT H7 Flow",
-      "category": "Case",
-      "price": 2800000,
-      "brand": "NZXT",
-      "warranty": "2 years",
-      "form_factor": "ATX Mid Tower",
-      "material": "Steel & Tempered Glass",
-      "fan_support": "Up to 6 fans",
-      "GPU_clearance": "400mm",
-      "PSU_clearance": "210mm",
-      "color_options": ["Black", "White"],
-      "RGB_support": "Yes"
+        "id": "PROD1007",
+        "name": "Case NZXT H7 Flow",
+        "category": "Case",
+        "price": 2800000,
+        "brand": "NZXT",
+        "warranty": "2 years",
+        "form_factor": "ATX Mid Tower",
+        "material": "Steel & Tempered Glass",
+        "fan_support": "Up to 6 fans",
+        "GPU_clearance": "400mm",
+        "PSU_clearance": "210mm",
+        "color_options": ["Black", "White"],
+        "RGB_support": "Yes",
+        "image": ""
     },
     {
-      "id": "PROD1008",
-      "name": "Tản nhiệt khí Noctua NH-D15",
-      "category": "Cooling",
-      "price": 2500000,
-      "brand": "Noctua",
-      "warranty": "6 years",
-      "fan_size": "140mm",
-      "heatpipes": "6",
-      "material": "Aluminum & Copper",
-      "color_options": ["Brown", "Black"],
-      "noise_level": "24.6 dBA",
-      "weight": "1.3kg"
+        "id": "PROD1008",
+        "name": "Tản nhiệt khí Noctua NH-D15",
+        "category": "Cooling",
+        "price": 2500000,
+        "brand": "Noctua",
+        "warranty": "6 years",
+        "fan_size": "140mm",
+        "heatpipes": "6",
+        "material": "Aluminum & Copper",
+        "color_options": ["Brown", "Black"],
+        "noise_level": "24.6 dBA",
+        "weight": "1.3kg",
+        "image": ""
     },
     {
-      "id": "PROD1009",
-      "name": "Bàn phím cơ Keychron K8",
-      "category": "Keyboard",
-      "price": 2200000,
-      "brand": "Keychron",
-      "warranty": "1 year",
-      "key_switches": "Hot-swappable",
-      "connection": "Bluetooth & Wired",
-      "backlight": "RGB",
-      "battery_capacity": "4000mAh",
-      "layout": "ANSI",
-      "custom_options": {
-        "switch_type": ["Red", "Blue", "Brown"]
-      }
+        "id": "PROD1009",
+        "name": "Bàn phím cơ Keychron K8",
+        "category": "Keyboard",
+        "price": 2200000,
+        "brand": "Keychron",
+        "warranty": "1 year",
+        "key_switches": "Hot-swappable",
+        "connection": "Bluetooth & Wired",
+        "backlight": "RGB",
+        "battery_capacity": "4000mAh",
+        "layout": "ANSI",
+        "custom_options": {
+            "switch_type": ["Red", "Blue", "Brown"]
+        },
+        "image": ""
     },
     {
-      "id": "PROD1010",
-      "name": "Chuột Logitech G Pro X Superlight",
-      "category": "Mouse",
-      "price": 3500000,
-      "brand": "Logitech",
-      "warranty": "2 years",
-      "sensor": "HERO 25K",
-      "weight": "63g",
-      "battery_life": "70 hours",
-      "color_options": ["Black", "White", "Red"],
-      "DPI": "25600",
-      "polling_rate": "1000Hz"
+        "id": "PROD1010",
+        "name": "Chuột Logitech G Pro X Superlight",
+        "category": "Mouse",
+        "price": 3500000,
+        "brand": "Logitech",
+        "warranty": "2 years",
+        "sensor": "HERO 25K",
+        "weight": "63g",
+        "battery_life": "70 hours",
+        "color_options": ["Black", "White", "Red"],
+        "DPI": "25600",
+        "polling_rate": "1000Hz",
+        "image": ""
     },
     {
         "id": "PROD1011",
@@ -158,9 +168,10 @@
         "frame_rate": "30fps",
         "microphone": "Dual Stereo",
         "connection": "USB-A",
-        "field_of_view": "78 degrees"
-      },
-      {
+        "field_of_view": "78 degrees",
+        "image": ""
+    },
+    {
         "id": "PROD1012",
         "name": "Tai nghe Razer BlackShark V2",
         "category": "Headset",
@@ -171,9 +182,10 @@
         "microphone": "Detachable",
         "connection": "USB & 3.5mm",
         "surround_sound": "THX Spatial Audio",
-        "color_options": ["Black", "Green"]
-      },
-      {
+        "color_options": ["Black", "Green"],
+        "image": ""
+    },
+    {
         "id": "PROD1013",
         "name": "Ổ cứng HDD Seagate Barracuda 4TB",
         "category": "Storage",
@@ -184,9 +196,10 @@
         "interface": "SATA 6Gb/s",
         "cache": "256MB",
         "RPM": "5400",
-        "form_factor": "3.5 inch"
-      },
-      {
+        "form_factor": "3.5 inch",
+        "image": ""
+    },
+    {
         "id": "PROD1014",
         "name": "Router TP-Link AX6000",
         "category": "Networking",
@@ -197,9 +210,10 @@
         "bandwidth": "6000Mbps",
         "ports": "1x WAN, 8x LAN",
         "security": "WPA3",
-        "antennas": "8"
-      },
-      {
+        "antennas": "8",
+        "image": ""
+    },
+    {
         "id": "PROD1015",
         "name": "USB Sandisk 128GB",
         "category": "Storage",
@@ -210,9 +224,10 @@
         "interface": "USB 3.2",
         "encryption": "AES 256-bit",
         "material": "Metal",
-        "color_options": ["Silver", "Black"]
-      },
-      {
+        "color_options": ["Silver", "Black"],
+        "image": ""
+    },
+    {
         "id": "PROD1016",
         "name": "Màn hình LG UltraGear 27GL850",
         "category": "Monitor",
@@ -223,9 +238,10 @@
         "resolution": "2560x1440",
         "refresh_rate": "144Hz",
         "panel_type": "IPS",
-        "adaptive_sync": "G-Sync, FreeSync"
-      },
-      {
+        "adaptive_sync": "G-Sync, FreeSync",
+        "image": ""
+    },
+    {
         "id": "PROD1017",
         "name": "Bàn di chuột SteelSeries QcK XXL",
         "category": "Accessories",
@@ -236,9 +252,10 @@
         "surface": "Cloth",
         "base": "Rubber",
         "edge": "Stitched",
-        "color_options": ["Black"]
-      },
-      {
+        "color_options": ["Black"],
+        "image": ""
+    },
+    {
         "id": "PROD1018",
         "name": "Ổ cứng SSD WD Black SN850 1TB",
         "category": "Storage",
@@ -249,9 +266,10 @@
         "read_speed": "7000MB/s",
         "write_speed": "5300MB/s",
         "form_factor": "M.2 NVMe",
-        "custom_options": {"heatsink": ["Yes", "No"]}
-      },
-      {
+        "custom_options": {"heatsink": ["Yes", "No"]},
+        "image": ""
+    },
+    {
         "id": "PROD1019",
         "name": "Bộ nhớ RAM Corsair Vengeance 16GB",
         "category": "RAM",
@@ -262,9 +280,10 @@
         "speed": "6000MHz",
         "voltage": "1.35V",
         "latency": "CL32",
-        "color_options": ["Black", "White"]
-      },
-      {
+        "color_options": ["Black", "White"],
+        "image": ""
+    },
+    {
         "id": "PROD1020",
         "name": "Microphone Blue Yeti",
         "category": "Microphone",
@@ -275,9 +294,10 @@
         "connection": "USB",
         "sample_rate": "48kHz",
         "bit_depth": "16-bit",
-        "color_options": ["Black", "Silver"]
-      }, 
-      {
+        "color_options": ["Black", "Silver"],
+        "image": ""
+    },
+    {
         "id": "PROD1021",
         "name": "Card âm thanh Focusrite Scarlett 2i2",
         "category": "Audio Interface",
@@ -288,9 +308,10 @@
         "outputs": "2 x TRS",
         "connectivity": "USB-C",
         "bit_depth": "24-bit",
-        "sample_rate": "192kHz"
-      },
-      {
+        "sample_rate": "192kHz",
+        "image": ""
+    },
+    {
         "id": "PROD1022",
         "name": "Loa Edifier R1700BT",
         "category": "Speakers",
@@ -301,9 +322,10 @@
         "connectivity": "Bluetooth, RCA, AUX",
         "frequency_response": "60Hz - 20kHz",
         "material": "Wood veneer",
-        "color_options": ["Black", "Walnut"]
-      },
-      {
+        "color_options": ["Black", "Walnut"],
+        "image": ""
+    },
+    {
         "id": "PROD1023",
         "name": "Switch mạng TP-Link SG108",
         "category": "Networking",
@@ -314,9 +336,10 @@
         "switch_type": "Unmanaged",
         "power_supply": "DC 5V",
         "housing_material": "Metal",
-        "LED_indicators": "Yes"
-      },
-      {
+        "LED_indicators": "Yes",
+        "image": ""
+    },
+    {
         "id": "PROD1024",
         "name": "Ổ cứng di động WD Elements 2TB",
         "category": "Storage",
@@ -327,9 +350,10 @@
         "interface": "USB 3.0",
         "encryption": "None",
         "shock_resistant": "No",
-        "color_options": ["Black"]
-      },
-      {
+        "color_options": ["Black"],
+        "image": ""
+    },
+    {
         "id": "PROD1025",
         "name": "Camera Logitech C920 HD Pro",
         "category": "Webcam",
@@ -340,9 +364,10 @@
         "frame_rate": "30fps",
         "microphone": "Dual Stereo",
         "connection": "USB 2.0",
-        "color_options": ["Black"]
-      },
-      {
+        "color_options": ["Black"],
+        "image": ""
+    },
+    {
         "id": "PROD1026",
         "name": "Đèn LED RGB Nanoleaf Shapes",
         "category": "Smart Lighting",
@@ -353,9 +378,10 @@
         "control_methods": "App, Voice, Touch",
         "power_consumption": "2W per panel",
         "custom_options": {"panel_shapes": ["Triangle", "Hexagon", "Square"]},
-        "color_options": ["Multi-color"]
-      },
-      {
+        "color_options": ["Multi-color"],
+        "image": ""
+    },
+    {
         "id": "PROD1027",
         "name": "Đế tản nhiệt laptop Cooler Master Notepal X3",
         "category": "Cooling",
@@ -366,9 +392,10 @@
         "material": "Metal Mesh",
         "USB_ports": "1 x USB 2.0",
         "adjustable_height": "Yes",
-        "weight": "1.1kg"
-      },
-      {
+        "weight": "1.1kg",
+        "image": ""
+    },
+    {
         "id": "PROD1028",
         "name": "Máy in HP LaserJet Pro M404dn",
         "category": "Printers",
@@ -379,9 +406,10 @@
         "resolution": "1200 x 1200 dpi",
         "connectivity": "USB, Ethernet",
         "duplex_printing": "Yes",
-        "color_options": ["White"]
-      },
-      {
+        "color_options": ["White"],
+        "image": ""
+    },
+    {
         "id": "PROD1029",
         "name": "Ổ cắm điện thông minh TP-Link Kasa HS300",
         "category": "Smart Home",
@@ -392,9 +420,10 @@
         "USB_ports": "3 x USB-A",
         "connectivity": "WiFi",
         "voice_control": "Alexa, Google Assistant",
-        "color_options": ["White"]
-      },
-      {
+        "color_options": ["White"],
+        "image": ""
+    },
+    {
         "id": "PROD1030",
         "name": "Máy lọc không khí Xiaomi Mi Air Purifier 3H",
         "category": "Smart Home",
@@ -405,9 +434,10 @@
         "filter_type": "HEPA",
         "noise_level": "32dB - 64dB",
         "connectivity": "WiFi, App Control",
-        "color_options": ["White"]
-      },
-      {
+        "color_options": ["White"],
+        "image": ""
+    },
+    {
         "id": "PROD1031",
         "name": "Tai nghe Sony WH-1000XM4",
         "category": "Audio",
@@ -417,9 +447,10 @@
         "connectivity": "Bluetooth 5.0",
         "battery_life": "30 hours",
         "noise_cancellation": "Active",
-        "color_options": ["Black", "Silver"]
-      },
-      {
+        "color_options": ["Black", "Silver"],
+        "image": ""
+    },
+    {
         "id": "PROD1032",
         "name": "Màn hình Dell UltraSharp U2723QE",
         "category": "Monitor",
@@ -430,9 +461,10 @@
         "resolution": "4K UHD",
         "refresh_rate": "60Hz",
         "panel_type": "IPS",
-        "color_options": ["Black"]
-      },
-      {
+        "color_options": ["Black"],
+        "image": ""
+    },
+    {
         "id": "PROD1033",
         "name": "Router ASUS RT-AX86U",
         "category": "Networking",
@@ -443,9 +475,10 @@
         "ports": "4 x LAN, 1 x WAN",
         "WiFi_standard": "WiFi 6",
         "security": "AiProtection Pro",
-        "color_options": ["Black"]
-      },
-      {
+        "color_options": ["Black"],
+        "image": ""
+    },
+    {
         "id": "PROD1034",
         "name": "Ổ cứng SSD Crucial P5 Plus 1TB",
         "category": "Storage",
@@ -456,9 +489,10 @@
         "read_speed": "6600MB/s",
         "write_speed": "5000MB/s",
         "TBW": "600TB",
-        "color_options": ["Black"]
-      },
-      {
+        "color_options": ["Black"],
+        "image": ""
+    },
+    {
         "id": "PROD1035",
         "name": "Bộ bàn phím và chuột Logitech MX Keys Combo",
         "category": "Accessories",
@@ -469,9 +503,10 @@
         "mouse_sensor": "Darkfield 4000DPI",
         "connectivity": "Bluetooth, USB Receiver",
         "battery_life": "10 days",
-        "color_options": ["Black", "Graphite"]
-      },
-      {
+        "color_options": ["Black", "Graphite"],
+        "image": ""
+    },
+    {
         "id": "PROD1036",
         "name": "Microphone Rode NT-USB Mini",
         "category": "Audio",
@@ -482,9 +517,10 @@
         "bit_depth": "24-bit",
         "sample_rate": "48kHz",
         "pickup_pattern": "Cardioid",
-        "color_options": ["Black"]
-      },
-      {
+        "color_options": ["Black"],
+        "image": ""
+    },
+    {
         "id": "PROD1037",
         "name": "Máy chiếu Xiaomi Mi Smart Projector 2",
         "category": "Projectors",
@@ -495,9 +531,10 @@
         "brightness": "500 ANSI lumens",
         "lamp_life": "30000 hours",
         "connectivity": "WiFi, HDMI, Bluetooth",
-        "color_options": ["White"]
-      },
-      {
+        "color_options": ["White"],
+        "image": ""
+    },
+    {
         "id": "PROD1038",
         "name": "Card đồ họa AMD Radeon RX 6800 XT",
         "category": "GPU",
@@ -508,9 +545,10 @@
         "boost_clock": "2250MHz",
         "power_consumption": "300W",
         "ports": "HDMI, DisplayPort",
-        "color_options": ["Black", "Red"]
-      },
-      {
+        "color_options": ["Black", "Red"],
+        "image": ""
+    },
+    {
         "id": "PROD1039",
         "name": "Laptop Lenovo ThinkPad X1 Carbon Gen 10",
         "category": "Laptops",
@@ -522,9 +560,10 @@
         "CPU": "Intel Core i7-1260P",
         "RAM": "16GB LPDDR5",
         "storage": "1TB NVMe SSD",
-        "color_options": ["Black"]
-      },
-      {
+        "color_options": ["Black"],
+        "image": ""
+    },
+    {
         "id": "PROD1040",
         "name": "Đồng hồ thông minh Apple Watch Series 8",
         "category": "Wearables",
@@ -535,9 +574,10 @@
         "battery_life": "18 hours",
         "connectivity": "GPS, Cellular",
         "water_resistance": "50m",
-        "color_options": ["Silver", "Graphite", "Gold"]
-      },
-      {
+        "color_options": ["Silver", "Graphite", "Gold"],
+        "image": ""
+    },
+    {
         "id": "PROD1041",
         "name": "Loa JBL Charge 5",
         "category": "Audio",
@@ -547,9 +587,10 @@
         "battery_life": "20 hours",
         "waterproof": "IP67",
         "connectivity": "Bluetooth 5.1",
-        "color_options": ["Black", "Blue", "Red"]
-      },
-      {
+        "color_options": ["Black", "Blue", "Red"],
+        "image": ""
+    },
+    {
         "id": "PROD1042",
         "name": "Tablet Samsung Galaxy Tab S8",
         "category": "Tablets",
@@ -560,9 +601,10 @@
         "resolution": "2560x1600",
         "battery_capacity": "8000mAh",
         "connectivity": "WiFi, 5G",
-        "color_options": ["Silver", "Graphite"]
-      },
-      {
+        "color_options": ["Silver", "Graphite"],
+        "image": ""
+    },
+    {
         "id": "PROD1043",
         "name": "Ổ cứng di động WD My Passport 2TB",
         "category": "Storage",
@@ -572,9 +614,10 @@
         "interface": "USB 3.2",
         "encryption": "AES 256-bit",
         "read_speed": "540MB/s",
-        "color_options": ["Black", "Blue", "Red"]
-      },
-      {
+        "color_options": ["Black", "Blue", "Red"],
+        "image": ""
+    },
+    {
         "id": "PROD1044",
         "name": "Bàn phím cơ Razer Huntsman Mini",
         "category": "Keyboard",
@@ -585,9 +628,10 @@
         "backlight": "RGB",
         "connectivity": "USB-C",
         "layout": "60% Compact",
-        "color_options": ["Black", "White"]
-      },
-      {
+        "color_options": ["Black", "White"],
+        "image": ""
+    },
+    {
         "id": "PROD1045",
         "name": "Chuột Razer DeathAdder V2",
         "category": "Mouse",
@@ -598,9 +642,10 @@
         "buttons": "8 programmable",
         "weight": "82g",
         "polling_rate": "1000Hz",
-        "color_options": ["Black"]
-      },
-      {
+        "color_options": ["Black"],
+        "image": ""
+    },
+    {
         "id": "PROD1046",
         "name": "Màn hình LG UltraGear 32GN600",
         "category": "Monitor",
@@ -611,9 +656,10 @@
         "resolution": "QHD 2560x1440",
         "refresh_rate": "165Hz",
         "panel_type": "VA",
-        "color_options": ["Black"]
-      },
-      {
+        "color_options": ["Black"],
+        "image": ""
+    },
+    {
         "id": "PROD1047",
         "name": "Tai nghe gaming HyperX Cloud II",
         "category": "Audio",
@@ -623,9 +669,10 @@
         "connectivity": "Wired USB, 3.5mm",
         "surround_sound": "7.1 Virtual",
         "microphone": "Detachable",
-        "color_options": ["Black-Red", "Gunmetal"]
-      },
-      {
+        "color_options": ["Black-Red", "Gunmetal"],
+        "image": ""
+    },
+    {
         "id": "PROD1048",
         "name": "Bộ phát WiFi TP-Link Archer AX73",
         "category": "Networking",
@@ -636,9 +683,10 @@
         "WiFi_standard": "WiFi 6",
         "security": "WPA3",
         "ports": "4 x LAN, 1 x WAN",
-        "color_options": ["Black"]
-      },
-      {
+        "color_options": ["Black"],
+        "image": ""
+    },
+    {
         "id": "PROD1049",
         "name": "Máy in HP LaserJet Pro MFP M428fdw",
         "category": "Printers",
@@ -648,9 +696,10 @@
         "functions": "Print, Copy, Scan, Fax",
         "connectivity": "WiFi, USB, Ethernet",
         "duplex_printing": "Automatic",
-        "color_options": ["White"]
-      },
-      {
+        "color_options": ["White"],
+        "image": ""
+    },
+    {
         "id": "PROD1050",
         "name": "Smartphone Google Pixel 7 Pro",
         "category": "Smartphones",
@@ -662,7 +711,7 @@
         "CPU": "Google Tensor G2",
         "RAM": "12GB",
         "storage": "256GB",
-        "color_options": ["Obsidian", "Snow"]
-      }
-  ]
-  
+        "color_options": ["Obsidian", "Snow"],
+        "image": ""
+    }
+]
