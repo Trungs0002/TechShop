@@ -156,6 +156,43 @@ app.put("/api/sanpham/:id", (req, res) => {
   }
 });
 
+const { MongoClient } = require('mongodb');
+
+const url = 'mongodb://localhost:27017';
+const client = new MongoClient(url);
+
+const dbName = 'listProducts';      
+const collectionName = 'product'; 
+
+async function connectToMongoDB() {
+    try {
+        // Kết nối đến MongoDB
+        await client.connect();
+        console.log('Connected successfully to MongoDB server');
+
+        // Truy cập cơ sở dữ liệu
+        const db = client.db(dbName);
+
+        // Truy cập collection
+        const collection = db.collection(collectionName);
+
+        // Đếm số lượng documents trong collection
+        const count = await collection.countDocuments();
+        console.log(` Number of documents in "${collectionName}": ${count}`);
+
+    } catch (err) {
+        console.error('Error connecting to MongoDB:', err);
+    } finally {
+        // Đóng kết nối
+        await client.close();
+        console.log('MongoDB connection closed');
+    }
+}
+
+// Gọi hàm kiểm tra
+connectToMongoDB();
+
+
 app.listen(port, () => console.log(`Server đang chạy tại http://localhost:${port}`));
 
 // test commit
