@@ -6,86 +6,64 @@
     <title>Web Bán Hàng Điện Tử</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
+            background-color: #f4f4f4;
+            color: #333;
         }
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-        }
-        h1 {
-            margin: 0;
-        }
-        main {
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .card-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
             margin-top: 20px;
         }
-        th, td {
+        .card {
+            background-color: white;
             border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            flex: 1;
+            margin: 0 10px;
         }
-        th {
-            background-color: #4CAF50;
-            color: white;
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin: 10px 0;
-        }
-        a {
+        .card a {
             text-decoration: none;
-            color: #4CAF50;
-            font-weight: bold;
+            color: #007BFF;
+            font-weight: 500;
+            font-size: 1.2rem;
         }
-        a:hover {
+        .card a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <header>
+    <header style="background-color: #007BFF; color: white; text-align: center; padding: 20px;">
         <h1>Web Bán Hàng Điện Tử</h1>
     </header>
-    <main>
-        <h2>Chức năng</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Chức năng</th>
-                    <th>Mô tả</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><a href="/addProducts">Thêm sản phẩm</a></td>
-                    <td>Thêm sản phẩm mới vào danh sách</td>
-                </tr>
-                <tr>
-                    <td><a href="/fProducts">Tìm và lọc sản phẩm</a></td>
-                    <td>Tìm kiếm và lọc sản phẩm theo tiêu chí</td>
-                </tr>
-                <tr>
-                    <td><a href="/updateProducts">Cập nhật sản phẩm</a></td>
-                    <td>Cập nhật thông tin sản phẩm</td>
-                </tr>
-                <tr>
-                    <td><a href="/deleteProducts">Xóa sản phẩm</a></td>
-                    <td>Xóa sản phẩm khỏi danh sách</td>
-                </tr>
-            </tbody>
-        </table>
-    </main>
+    <div class="card-container">
+        <div class="card">
+            <a href="/">Trang chủ</a>
+        </div>
+        <div class="card">
+            <a href="/addProducts">Thêm sản phẩm</a>
+        </div>
+        <div class="card">
+            <a href="/fProducts">Tìm và lọc sản phẩm</a>
+        </div>
+        <div class="card">
+            <a href="/updateProducts">Cập nhật sản phẩm</a>
+        </div>
+        <div class="card">
+            <a href="/deleteProducts">Xóa sản phẩm</a>
+        </div>
+    </div>
 </body>
 </html>
