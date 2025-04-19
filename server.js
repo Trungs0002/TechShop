@@ -4,7 +4,7 @@ const { MongoClient } = require('mongodb');
 const app = express();
 const port = 3000;
 
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb://127.0.0.1:27017';
 const client = new MongoClient(url);
 const dbName = 'config';      
 const collectionName = 'listProduct';
@@ -37,6 +37,9 @@ async function connectToMongoDB() {
 
 // Cấu hình để phục vụ file tĩnh (HTML, CSS)
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public/pages")));
+app.use(express.static(path.join(__dirname, "public/images")));
+
 
 // Middleware để xử lý dữ liệu từ form
 app.use(express.json());
@@ -68,24 +71,30 @@ app.get("/deleteProducts", (req, res) => {
   res.sendFile(path.join(__dirname, "public/pages/deleteProducts.html"));
 });
 
-// API để thêm sản phẩm mới
-app.post('/api/sanpham', (req, res) => {
-    const { id, name, price, brand, warranty } = req.body;
+// thêm vào database nẹ 
+app.post('/api/sanpham', async (req, res) => {
+  const { id, name, price, brand, warranty } = req.body;
 
-    // Kiểm tra dữ liệu đầu vào
-    if (!id || !name || !price || !brand || !warranty) {
-        return res.status(400).json({ error: 'Vui lòng cung cấp đầy đủ thông tin sản phẩm!' });
-    }
+  if (!id || !name || !price || !brand || !warranty) {
+    return res.status(400).json({ error: 'Vui lòng cung cấp đầy đủ thông tin sản phẩm!' });
+  }
 
-    // Tạo sản phẩm mới
-    const newProduct = { id, name, price, brand, warranty };
+  const newProduct = { id, name, price: parseInt(price), brand, warranty };
 
-    // Thêm sản phẩm vào danh sách (giả sử bạn lưu trong một mảng)
-    sanPham.push(newProduct);
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName);
 
-    // Trả về sản phẩm mới
+    await collection.insertOne(newProduct);
     res.status(201).json(newProduct);
+  } catch (err) {
+    res.status(500).json({ error: 'Lỗi server khi thêm sản phẩm!' });
+  } finally {
+    await client.close();
+  }
 });
+
 
 // API để xóa sản phẩm
 app.delete("/api/sanpham/:id", (req, res) => {
