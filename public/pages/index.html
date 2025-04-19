@@ -5,47 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Web Bán Hàng Điện Tử</title>
     <style>
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
+        /* Reset CSS */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(90deg, #007BFF, #0056b3);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
         .card-container {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             gap: 20px;
-            margin-top: 20px;
+            padding: 40px 20px;
         }
+
         .card {
             background-color: white;
             border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
             padding: 20px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            flex: 1;
-            margin: 0 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
         }
+
         .card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
         }
+
         .card a {
             text-decoration: none;
             color: #007BFF;
-            font-weight: 500;
-            font-size: 1.2rem;
+            font-weight: 600;
+            font-size: 1.5rem;
+            display: block;
+            padding: 10px 0;
+            transition: color 0.3s ease;
         }
+
         .card a:hover {
+            color: #0056b3;
             text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 15px;
+            }
+
+            .card a {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <header style="background-color: #007BFF; color: white; text-align: center; padding: 20px;">
+    <header>
         <h1>Web Bán Hàng Điện Tử</h1>
     </header>
     <div class="card-container">

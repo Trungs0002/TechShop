@@ -1,9 +1,39 @@
 const express = require("express");
 const path = require("path");
-const sanPham = require("./5_SanPham"); // Import danh sách sản phẩm
-
+const { MongoClient } = require('mongodb');
 const app = express();
 const port = 3000;
+
+const url = 'mongodb://localhost:27017';
+const client = new MongoClient(url);
+const dbName = 'config';      
+const collectionName = 'listProduct';
+
+async function connectToMongoDB() {
+  try {
+      // Kết nối đến MongoDB
+      await client.connect();
+      console.log('Connected successfully to MongoDB server');
+
+      // Truy cập cơ sở dữ liệu
+      const db = client.db(dbName);
+
+      // Truy cập collection
+      const collection = db.collection(collectionName);
+
+      // Đếm số lượng documents trong collection
+      const count = await collection.countDocuments();
+      console.log(` Number of documents in "${collectionName}": ${count}`);
+
+  } catch (err) {
+      console.error('Error connecting to MongoDB:', err);
+  } finally {
+      // Đóng kết nối
+      await client.close();
+      console.log('MongoDB connection closed');
+  }
+}
+
 
 // Cấu hình để phục vụ file tĩnh (HTML, CSS)
 app.use(express.static(path.join(__dirname, "public")));
@@ -11,9 +41,22 @@ app.use(express.static(path.join(__dirname, "public")));
 // Middleware để xử lý dữ liệu từ form
 app.use(express.json());
 
+async function getProductsFromMongoDB() {
+  await client.connect();
+  const db = client.db(dbName);
+  const collection = db.collection(collectionName);
+  const data = await collection.find({}).toArray();
+  return data;
+}
+
 // API để lấy danh sách sản phẩm
-app.get("/api/sanpham", (req, res) => {
-  res.json(sanPham);
+app.get('/api/sanpham', async (req, res) => {
+  try {
+    const products = await getProductsFromMongoDB();
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: "Lỗi server khi lấy dữ liệu" });
+  }
 });
 
 // Route để trả về file addProducts.html trong thư mục public/pages
@@ -65,7 +108,7 @@ app.get("/", (req, res) => {
 
 // Route để trả về file FProducts.html trong thư mục public/pages
 app.get("/fProducts", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/pages/FProducts.html"));
+  res.sendFile(path.join(__dirname, "public/pages/readProducts.html"));
 });
 
 // API để lọc sản phẩm
@@ -156,43 +199,12 @@ app.put("/api/sanpham/:id", (req, res) => {
   }
 });
 
-const { MongoClient } = require('mongodb');
-
-const url = 'mongodb://localhost:27017';
-const client = new MongoClient(url);
-
-const dbName = 'listProducts';      
-const collectionName = 'product'; 
-
-async function connectToMongoDB() {
-    try {
-        // Kết nối đến MongoDB
-        await client.connect();
-        console.log('Connected successfully to MongoDB server');
-
-        // Truy cập cơ sở dữ liệu
-        const db = client.db(dbName);
-
-        // Truy cập collection
-        const collection = db.collection(collectionName);
-
-        // Đếm số lượng documents trong collection
-        const count = await collection.countDocuments();
-        console.log(` Number of documents in "${collectionName}": ${count}`);
-
-    } catch (err) {
-        console.error('Error connecting to MongoDB:', err);
-    } finally {
-        // Đóng kết nối
-        await client.close();
-        console.log('MongoDB connection closed');
-    }
-}
-
-// Gọi hàm kiểm tra
-connectToMongoDB();
 
 
-app.listen(port, () => console.log(`Server đang chạy tại http://localhost:${port}`));
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+  connectToMongoDB(); // chỉ chạy 1 lần khi khởi động server
+});
 
 // test commit
