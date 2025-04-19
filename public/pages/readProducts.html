@@ -1,116 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh sách sản phẩm</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Danh sách sản phẩm</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #searchForm {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    #searchForm input, #searchForm button {
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    #productContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 16px;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .product-card h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .product-card p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .product-card .price {
+      font-size: 16px;
+      font-weight: bold;
+      color: #007BFF;
+    }
+
+    #pagination-controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    #pagination-controls button {
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .product-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Danh sách sản phẩm</h1>
+  <h1>Danh sách sản phẩm</h1>
 
-    <!-- Form tìm kiếm sản phẩm -->
-    <form id="searchForm">
-        <input type="text" id="searchName" placeholder="Tên sản phẩm">
-        <input type="number" id="searchPrice" placeholder="Giá tối đa">
-        <input type="text" id="searchBrand" placeholder="Thương hiệu">
-        <input type="text" id="searchWarranty" placeholder="Bảo hành">
-        <button type="button" id="refresh-btn">Làm mới danh sách</button>
-    </form>
+  <form id="searchForm">
+    <input type="text" id="searchName" placeholder="Tên">
+    <input type="text" id="searchCategory" placeholder="Loại">
+    <input type="number" id="searchMinPrice" placeholder="Giá từ">
+    <input type="number" id="searchMaxPrice" placeholder="Giá đến">
+    <input type="text" id="searchBrand" placeholder="Thương hiệu">
+    <button type="submit">Tìm kiếm</button>
+  </form>
 
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Tên sản phẩm</th>
-                <th>Giá</th>
-                <th>Thương hiệu</th>
-                <th>Bảo hành</th>
-            </tr>
-        </thead>
-        <tbody id="product-list">
-            <!-- Danh sách sản phẩm sẽ hiển thị ở đây -->
-        </tbody>
-    </table>
+  <div id="productContainer"></div>
 
-    <script>
-        let products = []; // Lưu dữ liệu sản phẩm để tìm kiếm cục bộ
+  <div id="pagination-controls">
+    <button id="prevPage">Trang trước</button>
+    <span id="pagination"></span>
+    <button id="nextPage">Trang sau</button>
+  </div>
 
-        // Hàm lấy dữ liệu từ API
-        function loadProducts(query = '') {
-            fetch(`/api/sanpham`)
-                .then(response => response.json())
-                .then(data => {
-                    products = data; // Lưu danh sách để tìm kiếm nhanh
-                    renderProducts(products);
-                })
-                .catch(error => console.error('Lỗi khi tải danh sách sản phẩm:', error));
-        }
+  <script>
+    let currentPage = 1;
+    const limit = 10;
+    let totalPages = 1;
 
-        // Hàm hiển thị danh sách sản phẩm
-        function renderProducts(filteredProducts) {
-            const productList = document.getElementById('product-list');
-            productList.innerHTML = ''; // Xóa danh sách cũ
-            
-            filteredProducts.forEach(sp => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${sp.id}</td>
-                    <td>${sp.name}</td>
-                    <td>${sp.price.toLocaleString()} VND</td>
-                    <td>${sp.brand}</td>
-                    <td>${sp.warranty}</td>
-                `;
-                productList.appendChild(row);
-            });
-        }    
-        // Hàm tìm kiếm theo từ đang gõ
-        function liveSearch() {
-            const name = document.getElementById('searchName').value.toLowerCase();
-            const price = parseFloat(document.getElementById('searchPrice').value); // Chuyển đổi giá trị thành số
-            const brand = document.getElementById('searchBrand').value.toLowerCase();
-            const warranty = document.getElementById('searchWarranty').value.toLowerCase();
+    function buildQueryParams() {
+      const name = document.getElementById("searchName").value;
+      const category = document.getElementById("searchCategory").value;
+      const minPrice = document.getElementById("searchMinPrice").value;
+      const maxPrice = document.getElementById("searchMaxPrice").value;
+      const brand = document.getElementById("searchBrand").value;
 
-            const filtered = products.filter(sp => 
-                (!name || sp.name.toLowerCase().includes(name)) &&
-                (isNaN(price) || sp.price >= price) && // Lọc sản phẩm có giá lớn hơn hoặc bằng
-                (!brand || sp.brand.toLowerCase().includes(brand)) &&
-                (!warranty || sp.warranty.toLowerCase().includes(warranty))
-            );
+      const params = new URLSearchParams({
+        name,
+        category,
+        minPrice,
+        maxPrice,
+        brand,
+        page: currentPage,
+        limit
+      });
 
-            renderProducts(filtered);
-        }
-         // Lọc ngay khi gõ vào ô tìm kiếm
-        document.getElementById('searchName').addEventListener('input', liveSearch);
-        document.getElementById('searchPrice').addEventListener('input', liveSearch);
-        document.getElementById('searchBrand').addEventListener('input', liveSearch);
-        document.getElementById('searchWarranty').addEventListener('input', liveSearch);
+      return params.toString();
+    }
 
-        // Gọi API để tải dữ liệu khi trang được mở
-        loadProducts();
+    async function fetchProducts(page = 1) {
+      currentPage = page;
+      const query = buildQueryParams();
 
-        // Xử lý nút "Làm mới danh sách"
-        document.getElementById('refresh-btn').addEventListener('click', function () {
-            document.getElementById('searchForm').reset(); // Reset form tìm kiếm
-            renderProducts(products); // Hiển thị lại danh sách đầy đủ
-        });
-    </script>
+      const res = await fetch(`/api/sanpham/filter?${query}`);
+      const data = await res.json();
+      renderCards(data.products);
+      renderPagination(data.total);
+    }
+
+    function renderCards(products) {
+      const container = document.getElementById("productContainer");
+      container.innerHTML = "";
+
+      products.forEach(p => {
+        const imageUrl = p.image && p.image.trim() !== "" ? p.image : "images/i9 -14900k.png";
+
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <img src="${imageUrl}" alt="${p.name}" class="product-image">
+          <h3>${p.name}</h3>
+          <p class="price">${p.price.toLocaleString()} VND</p>
+          <p>Loại: ${p.category || "-"}</p>
+          <p>Thương hiệu: ${p.brand || "-"}</p>
+          <p>Bảo hành: ${p.warranty || "-"}</p>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderPagination(totalItems) {
+      totalPages = Math.ceil(totalItems / limit);
+      document.getElementById("pagination").textContent = `Trang ${currentPage} / ${totalPages}`;
+    }
+
+    document.getElementById("searchForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      fetchProducts(1);
+    });
+
+    document.getElementById("prevPage").addEventListener("click", () => {
+      if (currentPage > 1) fetchProducts(currentPage - 1);
+    });
+
+    document.getElementById("nextPage").addEventListener("click", () => {
+      if (currentPage < totalPages) fetchProducts(currentPage + 1);
+    });
+
+    fetchProducts();
+  </script>
 </body>
 </html>

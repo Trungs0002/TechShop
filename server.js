@@ -112,25 +112,43 @@ app.get("/fProducts", (req, res) => {
 });
 
 // API để lọc sản phẩm
-app.get("/api/sanpham/filter", (req, res) => {
-  const { name, price, brand, warranty } = req.query;
-  let filteredProducts = sanPham;
+app.get('/api/sanpham/filter', async (req, res) => {
+  const { name, category, priceFrom, priceTo, sortBy, page = 1 } = req.query;
 
-  if (name) {
-    filteredProducts = filteredProducts.filter((product) => product.name.toLowerCase().includes(name.toLowerCase()));
-  }
-  if (price) {
-    filteredProducts = filteredProducts.filter((product) => product.price <= parseInt(price));
-  }
-  if (brand) {
-    filteredProducts = filteredProducts.filter((product) => product.brand.toLowerCase().includes(brand.toLowerCase()));
-  }
-  if (warranty) {
-    filteredProducts = filteredProducts.filter((product) => product.warranty.toLowerCase().includes(warranty.toLowerCase()));
-  }
+  const client = new MongoClient(url);
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName);
 
-  res.json(filteredProducts);
+    const query = {};
+    if (name) query.name = { $regex: name, $options: 'i' };
+    if (category) query.category = { $regex: category, $options: 'i' };
+    if (priceFrom || priceTo) {
+      query.price = {};
+      if (priceFrom) query.price.$gte = parseFloat(priceFrom);
+      if (priceTo) query.price.$lte = parseFloat(priceTo);
+    }
+
+    let sortOption = {};
+    if (sortBy === 'price_asc') sortOption.price = 1;
+    else if (sortBy === 'price_desc') sortOption.price = -1;
+
+    const limit = 10;
+    const skip = (parseInt(page) - 1) * limit;
+
+    const products = await collection.find(query).sort(sortOption).skip(skip).limit(limit).toArray();
+    const total = await collection.countDocuments(query);
+
+    res.json({ products, total });
+  } catch (err) {
+    console.error('Lỗi truy vấn:', err);
+    res.status(500).json({ error: 'Lỗi máy chủ' });
+  } finally {
+    await client.close();
+  }
 });
+
 
 // Route để trả về updateProducts.html
 app.get("/updateProducts", (req, res) => {
