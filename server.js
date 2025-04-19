@@ -113,42 +113,31 @@ app.get("/fProducts", (req, res) => {
 
 // API để lọc sản phẩm
 app.get('/api/sanpham/filter', async (req, res) => {
-  const { name, category, priceFrom, priceTo, sortBy, page = 1 } = req.query;
+  const { minPrice, maxPrice, category, page = 1, limit = 10 } = req.query;
 
-  const client = new MongoClient(url);
+  const query = {};
+
+  if (minPrice) query.price = { ...query.price, $gte: parseInt(minPrice) };
+  if (maxPrice) query.price = { ...query.price, $lte: parseInt(maxPrice) };
+  if (category) query.category = category;
+
   try {
     await client.connect();
     const db = client.db(dbName);
     const collection = db.collection(collectionName);
 
-    const query = {};
-    if (name) query.name = { $regex: name, $options: 'i' };
-    if (category) query.category = { $regex: category, $options: 'i' };
-    if (priceFrom || priceTo) {
-      query.price = {};
-      if (priceFrom) query.price.$gte = parseFloat(priceFrom);
-      if (priceTo) query.price.$lte = parseFloat(priceTo);
-    }
-
-    let sortOption = {};
-    if (sortBy === 'price_asc') sortOption.price = 1;
-    else if (sortBy === 'price_desc') sortOption.price = -1;
-
-    const limit = 10;
-    const skip = (parseInt(page) - 1) * limit;
-
-    const products = await collection.find(query).sort(sortOption).skip(skip).limit(limit).toArray();
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const products = await collection.find(query).skip(skip).limit(parseInt(limit)).toArray();
     const total = await collection.countDocuments(query);
 
     res.json({ products, total });
   } catch (err) {
-    console.error('Lỗi truy vấn:', err);
-    res.status(500).json({ error: 'Lỗi máy chủ' });
+    console.error("Error fetching products:", err);
+    res.status(500).json({ error: "Lỗi server khi lấy dữ liệu" });
   } finally {
     await client.close();
   }
 });
-
 
 // Route để trả về updateProducts.html
 app.get("/updateProducts", (req, res) => {
