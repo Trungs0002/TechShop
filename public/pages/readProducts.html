@@ -127,19 +127,19 @@
 
     <h3>Loại</h3>
     <div id="categoryFilters">
-      <button data-category="CPU">CPU</button>
-      <button data-category="RAM">RAM</button>
-      <button data-category="Ổ cứng/SSD">Ổ cứng/SSD</button>
-      <button data-category="GPU">Card đồ họa (GPU)</button>
-      <button data-category="Mainboard">Bo mạch chủ (Mainboard)</button>
-      <button data-category="PSU">Nguồn (PSU)</button>
-      <button data-category="Case">Vỏ case</button>
-      <button data-category="Tản nhiệt">Tản nhiệt</button>
-      <button data-category="Bàn phím">Bàn phím</button>
-      <button data-category="Chuột">Chuột</button>
-      <button data-category="Màn hình">Màn hình</button>
-      <button data-category="Card âm thanh">Card âm thanh</button>
-      <button data-category="Thiết bị mạng">Thiết bị mạng</button>
+      <button data-category="CPUX">CPU</button>
+      <button data-category="RAMX">RAM</button>
+      <button data-category="SSDX">Ổ cứng/SSD</button>
+      <button data-category="GPUX">Card đồ họa (GPU)</button>
+      <button data-category="MAIN">Bo mạch chủ (Mainboard)</button>
+      <button data-category="PSUX">Nguồn (PSU)</button>
+      <button data-category="CASE">Vỏ case</button>
+      <button data-category="COOL">Tản nhiệt</button>
+      <button data-category="KEYB">Bàn phím</button>
+      <button data-category="MOUS">Chuột</button>
+      <button data-category="MONI">Màn hình</button>
+      <button data-category="SOUN">Card âm thanh</button>
+      <button data-category="NETW">Thiết bị mạng</button>
     </div>
   </div>
 
@@ -171,7 +171,8 @@
         limit
       });
 
-      fetchProducts(1, params.toString());
+      console.log(`/api/sanpham/filter?${params.toString()}`); // Debug URL
+      fetchProducts(currentPage, params.toString());
     }
 
     document.querySelectorAll("#priceFilters button").forEach(button => {
@@ -185,18 +186,21 @@
       });
     });
 
-    document.querySelectorAll("#categoryFilters button").forEach(button => {
-      button.addEventListener("click", () => {
-        document.querySelectorAll("#categoryFilters button").forEach(btn => btn.classList.remove("active"));
-        button.classList.add("active");
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("#categoryFilters button").forEach(button => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll("#categoryFilters button").forEach(btn => btn.classList.remove("active"));
+          button.classList.add("active");
 
-        currentFilters.category = button.getAttribute("data-category");
-        applyFilters();
+          currentFilters.category = button.getAttribute("data-category");
+
+          applyFilters();
+        });
       });
     });
 
     async function fetchProducts(page = 1, query = "") {
-      currentPage = page;
+      currentPage = page; // Cập nhật trang hiện tại
 
       const res = await fetch(`/api/sanpham/filter?${query}`);
       const data = await res.json();
@@ -230,13 +234,18 @@
       document.getElementById("pagination").textContent = `Trang ${currentPage} / ${totalPages}`;
     }
 
-
     document.getElementById("prevPage").addEventListener("click", () => {
-      if (currentPage > 1) fetchProducts(currentPage - 1);
+      if (currentPage > 1) {
+        currentPage--; // Giảm số trang hiện tại
+        applyFilters(); // Gọi lại applyFilters để tải dữ liệu mới
+      }
     });
 
     document.getElementById("nextPage").addEventListener("click", () => {
-      if (currentPage < totalPages) fetchProducts(currentPage + 1);
+      if (currentPage < totalPages) {
+        currentPage++; // Tăng số trang hiện tại
+        applyFilters(); // Gọi lại applyFilters để tải dữ liệu mới
+      }
     });
 
     fetchProducts();

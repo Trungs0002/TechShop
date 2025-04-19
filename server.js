@@ -117,16 +117,19 @@ app.get('/api/sanpham/filter', async (req, res) => {
 
   const query = {};
 
+  // Lọc theo giá
   if (minPrice) query.price = { ...query.price, $gte: parseInt(minPrice) };
   if (maxPrice) query.price = { ...query.price, $lte: parseInt(maxPrice) };
-  if (category) query.category = category;
+
+  // Lọc theo loại sản phẩm dựa trên 4 ký tự đầu của id
+  if (category) query.id = { $regex: `^${category}` };
 
   try {
     await client.connect();
     const db = client.db(dbName);
     const collection = db.collection(collectionName);
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page) - 1) * parseInt(limit); // Tính số lượng bản ghi cần bỏ qua
     const products = await collection.find(query).skip(skip).limit(parseInt(limit)).toArray();
     const total = await collection.countDocuments(query);
 
