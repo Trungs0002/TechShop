@@ -97,16 +97,24 @@ app.post('/api/sanpham', async (req, res) => {
 
 
 // API để xóa sản phẩm
-app.delete("/api/sanpham/:id", (req, res) => {
+app.delete("/api/sanpham/:id", async (req, res) => {
   const productId = req.params.id;
-
-  // Tìm và xóa sản phẩm khỏi danh sách
-  const productIndex = sanPham.findIndex((product) => product.id === productId);
-  if (productIndex !== -1) {
-    sanPham.splice(productIndex, 1);
-    res.status(200).send({ message: "Sản phẩm đã được xóa thành công!" });
-  } else {
-    res.status(404).send({ message: "Không tìm thấy sản phẩm!" });
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName);
+    
+    const result = await collection.deleteOne({ id: productId });
+    if (result.deletedCount === 0) {
+      res.status(404).send({ message: "Không tìm thấy sản phẩm!" });
+    } else {
+      res.status(200).send({ message: "Sản phẩm đã được xóa thành công!" });
+    }
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).send({ message: "Lỗi server khi xóa sản phẩm!" });
+  } finally {
+    await client.close();
   }
 });
 
