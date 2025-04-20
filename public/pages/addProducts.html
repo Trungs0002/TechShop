@@ -128,6 +128,7 @@
     <div class="button-group">
         <button class="btn btn-primary" id="add-product-btn">Thêm sản phẩm</button>
         <button class="btn btn-primary" id="add-many-product-btn">Import CSV/JSON</button>
+        <input type="file" id="file-upload" accept=".json,.csv" style="display:none">
     </div>
 
     <div id="add-product-form">
@@ -143,9 +144,13 @@
                 <td><input type="text" id="custom-prefix"></td>
             </tr>
             <tr>
-                <td><label for="image">Hình ảnh (URL):</label></td>
-                <td><input type="text" id="image" placeholder="URL hình ảnh"></td>
+                <td><label for="image">Hình ảnh:</label></td>
+                <td><input type="file" id="image-upload" accept="image/* ">
+                    <input type="hidden" id="image">
+                </td>
+
             </tr>
+            
             <tr>
                 <td><label for="id">ID:</label></td>
                 <td><input type="text" id="id" disabled></td>
@@ -230,15 +235,16 @@
             } else {
                 document.getElementById('custom-category-row').classList.add('hidden');
                 document.getElementById('custom-prefix-row').classList.add('hidden');
-                const prefix = selected.normalize("NFD").replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase();
-                const padded = String(currentCounter++).padStart(4, '0');
-                idField.value = prefix + 'X' + padded;
+                const prefix = selected.normalize("NFD").replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase() + 'X';
+                const newId = generateNextId(prefix);
+                idField.value = newId;
             }
         });
 
         fetch('/api/sanpham')
             .then(res => res.json())
             .then(data => {
+                allProducts = data; // lưu toàn bộ sản phẩm cho việc sinh ID
                 const productList = document.getElementById('product-list');
                 data.forEach(sp => {
                     const row = document.createElement('tr');
@@ -254,10 +260,36 @@
                     productList.appendChild(row);
                 });
             });
+        // xử lý sự kiện thêm sản phẩm
+        function generateNextId(prefix) {
+            const matching = allProducts.filter(p => p.id.startsWith(prefix));
+            let maxNum = 0;
+            matching.forEach(p => {
+                const suffix = p.id.slice(prefix.length);
+                const num = parseInt(suffix);
+                if (!isNaN(num)) {
+                    maxNum = Math.max(maxNum, num);
+                }
+            });
+            const nextNum = (maxNum + 1).toString().padStart(4, '0');
+            return prefix + nextNum;
+        }
+
 
         document.getElementById('add-product-btn').addEventListener('click', () => {
             document.getElementById('add-product-form').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        // xử lý hình ảnh
+        document.getElementById('image-upload').addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('image').value = e.target.result; // lưu base64 vào hidden input
+            };
+            reader.readAsDataURL(file);
         });
 
         document.getElementById('cancel-btn').addEventListener('click', () => {
@@ -310,6 +342,82 @@
                     console.error('Lỗi khi thêm sản phẩm:', error);
                     alert('Không thể thêm sản phẩm. Vui lòng thử lại!');
                 });
+        });
+
+
+        // xử lý thêm nhiều sản phẩm 
+        document.getElementById('add-many-product-btn').addEventListener('click', () => {
+            document.getElementById('file-upload').click();
+        });
+
+        document.getElementById('file-upload').addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const content = e.target.result;
+                    let products;
+
+                    if (file.name.endsWith('.json')) {
+                        products = JSON.parse(content);
+                    } else if (file.name.endsWith('.csv')) {
+                        const lines = content.split('\n').filter(line => line.trim());
+                        const headers = lines[0].split(',');
+                        products = lines.slice(1).map(line => {
+                            const values = line.split(',');
+                            const obj = {};
+                            headers.forEach((h, i) => obj[h.trim()] = values[i]?.trim());
+                            return obj;
+                        });
+                    }
+
+                    if (!Array.isArray(products)) throw new Error('Dữ liệu không hợp lệ');
+
+                    if (!confirm(`Đã tải ${products.length} sản phẩm. Bạn có muốn thêm không?`)) return;
+
+                    products.forEach(p => {
+                        const prefix = p.id && typeof p.id === 'string' ? p.id.match(/^[A-Z]+X/)?.[0] : null;
+                        let id = p.id;
+                        if (!id || !prefix) {
+                            const cat = p.category || 'KHAX';
+                            const genPrefix = cat.normalize("NFD").replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase() + 'X';
+                            id = generateNextId(genPrefix);
+                        }
+                        const product = {
+                            id,
+                            name: p.name,
+                            price: parseFloat(p.price),
+                            brand: p.brand,
+                            warranty: p.warranty,
+                            image: p.image || ''
+                        };
+
+                        fetch('/api/sanpham', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(product)
+                        })
+                            .then(res => res.json())
+                            .then(added => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td><img src="${added.image || 'images/i9 -14900k.png'}" style="width: 80px; height: auto;"></td>
+                                    <td>${added.id}</td>
+                                    <td>${added.name}</td>
+                                    <td>${parseFloat(added.price).toLocaleString()} VND</td>
+                                    <td>${added.brand}</td>
+                                    <td>${added.warranty}</td>
+                                `;
+                                document.getElementById('product-list').appendChild(row);
+                            });
+                    });
+                } catch (err) {
+                    alert('Không thể đọc file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
         });
     </script>
 </body>
