@@ -125,10 +125,35 @@
     .btn-delete:hover {
       background-color: #e53935;
     }
+
+    #messageContainer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .message-card {
+      padding: 10px 20px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .message-card.success {
+      background-color: #4CAF50;
+    }
+
+    .message-card.error {
+      background-color: #f44336;
+    }
   </style>
 </head>
 <body>
   <h1>Danh sách sản phẩm</h1>
+  <div id="messageContainer"></div>
 
   <div id="filterContainer">
     <h3>Giá</h3>
@@ -195,6 +220,7 @@
 
         currentFilters.minPrice = button.getAttribute("data-min");
         currentFilters.maxPrice = button.getAttribute("data-max");
+        currentPage = 1; // Reset trang về 1 khi thay đổi filter
         applyFilters();
       });
     });
@@ -206,7 +232,7 @@
           button.classList.add("active");
 
           currentFilters.category = button.getAttribute("data-category");
-
+          currentPage = 1; // Reset trang về 1 khi thay đổi filter
           applyFilters();
         });
       });
@@ -262,26 +288,38 @@
       }
     });
 
+    function showCardMessage(message, type) {
+      const messageContainer = document.getElementById("messageContainer");
+      const messageCard = document.createElement("div");
+      messageCard.className = `message-card ${type}`;
+      messageCard.textContent = message;
+      messageContainer.appendChild(messageCard);
+
+      setTimeout(() => {
+        messageContainer.removeChild(messageCard);
+      }, 3000);
+    }
+
     async function deleteProduct(productId) {
-      if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
+      if (confirm("Bạn có thật sự muốn xóa sản phẩm này không?")) {
         try {
           const res = await fetch(`/api/sanpham/${productId}`, {
             method: "DELETE",
           });
           if (res.ok) {
-            alert("Sản phẩm đã được xóa!");
+            showCardMessage("Sản phẩm đã được xóa!", "success");
             applyFilters(); // Tải lại danh sách sản phẩm
           } else {
-            alert("Không thể xóa sản phẩm.");
+            showCardMessage("Không thể xóa sản phẩm.", "error");
           }
         } catch (err) {
           console.error(err);
-          alert("Đã xảy ra lỗi khi xóa sản phẩm.");
+          showCardMessage("Đã xảy ra lỗi khi xóa sản phẩm.", "error");
         }
       }
     }
 
-    fetchProducts();
+    fetchProducts(); // Gọi hàm fetchProducts khi trang được tải
   </script>
 </body>
 </html>
