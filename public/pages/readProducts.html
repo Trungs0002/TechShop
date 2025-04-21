@@ -182,18 +182,19 @@
 
         currentFilters.minPrice = button.getAttribute("data-min");
         currentFilters.maxPrice = button.getAttribute("data-max");
+        currentPage = 1; // Reset trang về 1 khi thay đổi filter
         applyFilters();
       });
     });
 
     document.querySelectorAll("#categoryFilters button").forEach(button => {
       button.addEventListener("click", () => {
-      document.querySelectorAll("#categoryFilters button").forEach(btn => btn.classList.remove("active"));
-      button.classList.add("active");
+        document.querySelectorAll("#categoryFilters button").forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
 
-      currentFilters.category = button.getAttribute("data-category");
-
-      applyFilters();
+        currentFilters.category = button.getAttribute("data-category");
+        currentPage = 1; // Reset trang về 1 khi thay đổi filter
+        applyFilters();
       });
     });
 
