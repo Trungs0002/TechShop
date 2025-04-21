@@ -6,8 +6,8 @@ const port = 3000;
 
 const url = "mongodb://127.0.0.1:27017";
 const client = new MongoClient(url);
-const dbName = "productdb";
-const collectionName = "SanPham"; // Tên collection trong MongoDB
+const dbName = "config";
+const collectionName = "listProduct"; // Tên collection trong MongoDB
 
 async function connectToMongoDB() {
   try {
