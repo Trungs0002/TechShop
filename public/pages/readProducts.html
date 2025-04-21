@@ -186,16 +186,14 @@
       });
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      document.querySelectorAll("#categoryFilters button").forEach(button => {
-        button.addEventListener("click", () => {
-          document.querySelectorAll("#categoryFilters button").forEach(btn => btn.classList.remove("active"));
-          button.classList.add("active");
+    document.querySelectorAll("#categoryFilters button").forEach(button => {
+      button.addEventListener("click", () => {
+      document.querySelectorAll("#categoryFilters button").forEach(btn => btn.classList.remove("active"));
+      button.classList.add("active");
 
-          currentFilters.category = button.getAttribute("data-category");
+      currentFilters.category = button.getAttribute("data-category");
 
-          applyFilters();
-        });
+      applyFilters();
       });
     });
 
