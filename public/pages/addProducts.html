@@ -1,10 +1,10 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh sách sản phẩm</title>
+    <title>Thêm sản phẩm</title>
     <style>
         :root {
             --primary-color: #4CAF50;
@@ -123,7 +123,7 @@
 </head>
 
 <body>
-    <h1>Danh sách sản phẩm</h1>
+    <h1>Thêm sản phẩm</h1>
 
     <div class="button-group">
         <button class="btn btn-primary" id="add-product-btn">Thêm sản phẩm</button>
@@ -150,7 +150,7 @@
                 </td>
 
             </tr>
-            
+
             <tr>
                 <td><label for="id">ID:</label></td>
                 <td><input type="text" id="id" disabled></td>
@@ -317,7 +317,7 @@
             formData.append('price', price);
             formData.append('brand', brand);
             formData.append('warranty', warranty);
-            
+
             if (imageFile) {
                 formData.append('image', imageFile);
             }
