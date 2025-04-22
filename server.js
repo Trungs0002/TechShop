@@ -129,6 +129,7 @@ app.get("/fProducts", (req, res) => {
 // API để lọc sản phẩm
 app.get("/api/sanpham/filter", async (req, res) => {
   const { minPrice, maxPrice, category, page = 1, limit = 10 } = req.query;
+  const search = req.query.search || ""; // Nếu không có `search`, gán giá trị mặc định là chuỗi rỗng
 
   const query = {};
 
@@ -139,13 +140,21 @@ app.get("/api/sanpham/filter", async (req, res) => {
   // Lọc theo loại sản phẩm dựa trên 4 ký tự đầu của id
   if (category) query.id = { $regex: `^${category}` };
 
+  // Tìm kiếm gần đúng theo tên hoặc thương hiệu
+  if (search) {
+    query.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { brand: { $regex: search, $options: 'i' } }
+    ];
+  }
+
   try {
     await client.connect();
     const db = client.db(dbName);
     const collection = db.collection(collectionName);
 
     const skip = (parseInt(page) - 1) * parseInt(limit); // Tính số lượng bản ghi cần bỏ qua
-    const products = await collection.find(query).skip(skip).limit(parseInt(limit)).toArray();
+    const products = await collection.find(query).sort({ price: -1 }).skip(skip).limit(parseInt(limit)).toArray();
     const total = await collection.countDocuments(query);
 
     res.json({ products, total });
