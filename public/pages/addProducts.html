@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thêm sản phẩm</title>
+    <title>Danh sách sản phẩm</title>
     <style>
         :root {
             --primary-color: #4CAF50;
@@ -123,7 +123,7 @@
 </head>
 
 <body>
-    <h1>Thêm sản phẩm</h1>
+    <h1>Danh sách sản phẩm</h1>
 
     <div class="button-group">
         <button class="btn btn-primary" id="add-product-btn">Thêm sản phẩm</button>
@@ -135,6 +135,28 @@
         <div class="form-title">Thêm sản phẩm mới</div>
         <div class="category-options" id="category-options"></div>
         <table>
+            <tr>
+                <td><label for="category-select">Loại hàng:</label></td>
+                <td>
+                    <select id="category-select">
+                        <option value="" disabled selected>-- Chọn loại hàng --</option>
+                        <option value="CPU">CPU</option>
+                        <option value="RAM">RAM</option>
+                        <option value="Ổ cứng">Ổ cứng</option>
+                        <option value="GPU">GPU</option>
+                        <option value="Mainboard">Mainboard</option>
+                        <option value="PSU">PSU</option>
+                        <option value="Case">Case</option>
+                        <option value="Tản nhiệt">Tản nhiệt</option>
+                        <option value="bàn phím">bàn phím</option>
+                        <option value="chuột">chuột</option>
+                        <option value="màn hình">màn hình</option>
+                        <option value="card âm thanh">card âm thanh</option>
+                        <option value="Thiết bị mạng">Thiết bị mạng</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </td>
+            </tr>
             <tr class="hidden" id="custom-category-row">
                 <td><label for="custom-category">Loại hàng:</label></td>
                 <td><input type="text" id="custom-category"></td>
@@ -150,7 +172,7 @@
                 </td>
 
             </tr>
-
+            
             <tr>
                 <td><label for="id">ID:</label></td>
                 <td><input type="text" id="id" disabled></td>
@@ -170,6 +192,16 @@
             <tr>
                 <td><label for="warranty">Bảo hành:</label></td>
                 <td><input type="text" id="warranty" placeholder="Bảo hành" list="warranty-list" required></td>
+            </tr>
+            <tr>
+                <td><label>Mô tả:</label></td>
+                <td id="discription-container">
+                    <div class="discription-pair">
+                        <input type="text" placeholder="Nhập Key" class="discription-key">
+                        <span>:</span>
+                        <input type="text" placeholder="Nhập Value" class="discription-value">
+                    </div>
+                </td>
             </tr>
         </table>
         <div style="text-align:center; margin-top: 15px;">
@@ -206,233 +238,222 @@
     </datalist>
 
     <script>
-        const categories = [
-            'CPU', 'RAM', 'Ổ cứng', 'GPU', 'Mainboard', 'PSU', 'Case', 'Tản nhiệt',
-            'bàn phím', 'chuột', 'màn hình', 'card âm thanh', 'Thiết bị mạng', 'Khác'
-        ];
-
-        const categoryContainer = document.getElementById('category-options');
-        categories.forEach(cat => {
-            const label = document.createElement('label');
-            const input = document.createElement('input');
-            input.type = 'radio';
-            input.name = 'category';
-            input.value = cat;
-            label.appendChild(input);
-            label.appendChild(document.createTextNode(' ' + cat));
-            categoryContainer.appendChild(label);
-        });
-
-        let currentCounter = 1;
-        categoryContainer.addEventListener('change', (e) => {
-            const selected = e.target.value;
-            const idField = document.getElementById('id');
-
-            if (selected === 'Khác') {
-                document.getElementById('custom-category-row').classList.remove('hidden');
-                document.getElementById('custom-prefix-row').classList.remove('hidden');
-                idField.value = '';
-            } else {
-                document.getElementById('custom-category-row').classList.add('hidden');
-                document.getElementById('custom-prefix-row').classList.add('hidden');
-                const prefix = selected.normalize("NFD").replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase() + 'X';
-                const newId = generateNextId(prefix);
-                idField.value = newId;
-            }
-        });
-
-        fetch('/api/sanpham')
-            .then(res => res.json())
-            .then(data => {
-                allProducts = data; // lưu toàn bộ sản phẩm cho việc sinh ID
-                const productList = document.getElementById('product-list');
-                data.forEach(sp => {
-                    const row = document.createElement('tr');
-                    const imageUrl = sp.image && sp.image.trim() !== '' ? sp.image : 'images/i9 -14900k.png';
-                    row.innerHTML = `
-                        <td><img src="${imageUrl}" style="width: 80px; height: auto;"></td>
-                        <td>${sp.id}</td>
-                        <td>${sp.name}</td>
-                        <td>${parseFloat(sp.price).toLocaleString()} VND</td>
-                        <td>${sp.brand}</td>
-                        <td>${sp.warranty}</td>
-                    `;
-                    productList.appendChild(row);
-                });
-            });
-        // xử lý sự kiện thêm sản phẩm
-        function generateNextId(prefix) {
-            const matching = allProducts.filter(p => p.id.startsWith(prefix));
-            let maxNum = 0;
-            matching.forEach(p => {
-                const suffix = p.id.slice(prefix.length);
-                const num = parseInt(suffix);
-                if (!isNaN(num)) {
-                    maxNum = Math.max(maxNum, num);
-                }
-            });
-            const nextNum = (maxNum + 1).toString().padStart(4, '0');
-            return prefix + nextNum;
+     function setupDiscriptionPairInput() {
+    const container = document.getElementById('discription-container');
+    container.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && (e.target.classList.contains('discription-key') || e.target.classList.contains('discription-value'))) {
+            e.preventDefault();
+            const div = document.createElement('div');
+            div.className = 'discription-pair';
+            div.innerHTML = `
+                <input type="text" placeholder="Nhập Key" class="discription-key">
+                <span>:</span>
+                <input type="text" placeholder="Nhập Value" class="discription-value">
+            `;
+            container.appendChild(div);
+            div.querySelector('.discription-key').focus();
         }
+    });
+}
+setupDiscriptionPairInput();
 
+const categorySelect = document.getElementById('category-select');
+categorySelect.addEventListener('change', (e) => {
+    const selected = e.target.value;
+    const idField = document.getElementById('id');
 
-        document.getElementById('add-product-btn').addEventListener('click', () => {
-            document.getElementById('add-product-form').style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (selected === 'Khác') {
+        document.getElementById('custom-category-row').classList.remove('hidden');
+        document.getElementById('custom-prefix-row').classList.remove('hidden');
+        idField.value = '';
+    } else {
+        document.getElementById('custom-category-row').classList.add('hidden');
+        document.getElementById('custom-prefix-row').classList.add('hidden');
+        const prefix = selected.normalize("NFD").replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase() + 'X';
+        idField.value = generateNextId(prefix);
+    }
+});
+
+let allProducts = [];
+
+fetch('/api/sanpham')
+    .then(res => res.json())
+    .then(data => {
+        allProducts = data;
+        const productList = document.getElementById('product-list');
+        data.forEach(sp => {
+            const row = document.createElement('tr');
+            const imageUrl = sp.image?.trim() || 'images/i9 -14900k.png';
+            row.innerHTML = `
+                <td><img src="${imageUrl}" style="width: 80px; height: auto;"></td>
+                <td>${sp.id}</td>
+                <td>${sp.name}</td>
+                <td>${parseFloat(sp.price).toLocaleString()} VND</td>
+                <td>${sp.brand}</td>
+                <td>${sp.warranty}</td>
+            `;
+            productList.appendChild(row);
         });
-        // xử lý hình ảnh
-        document.getElementById('image-upload').addEventListener('change', function () {
-            const file = this.files[0];
-            if (!file) return;
+    });
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                document.getElementById('image').value = e.target.result; // lưu base64 vào hidden input
-            };
-            reader.readAsDataURL(file);
-        });
+function generateNextId(prefix) {
+    const matching = allProducts.filter(p => p.id.startsWith(prefix));
+    let maxNum = 0;
+    matching.forEach(p => {
+        const num = parseInt(p.id.slice(prefix.length));
+        if (!isNaN(num)) maxNum = Math.max(maxNum, num);
+    });
+    return prefix + (maxNum + 1).toString().padStart(4, '0');
+}
 
-        document.getElementById('cancel-btn').addEventListener('click', () => {
-            document.getElementById('add-product-form').style.display = 'none';
-        });
+document.getElementById('add-product-btn').addEventListener('click', () => {
+    document.getElementById('add-product-form').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
-        document.getElementById('save-btn').addEventListener('click', () => {
-            const id = document.getElementById('id').value;
-            const name = document.getElementById('name').value;
-            const price = document.getElementById('price').value;
-            const brand = document.getElementById('brand').value;
-            const warranty = document.getElementById('warranty').value;
-            // Lấy file ảnh từ input "image-upload"
-            const imageFile = document.getElementById('image-upload').files[0];
+document.getElementById('image-upload').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        document.getElementById('image').value = e.target.result;
+    };
+    reader.readAsDataURL(file);
+});
 
-            if (!id || !name || !price || !brand || !warranty) {
-                alert('Vui lòng nhập đầy đủ thông tin!');
-                return;
+document.getElementById('cancel-btn').addEventListener('click', () => {
+    document.getElementById('add-product-form').style.display = 'none';
+});
+
+document.getElementById('save-btn').addEventListener('click', () => {
+    const id = document.getElementById('id').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const price = document.getElementById('price').value.trim();
+    const brand = document.getElementById('brand').value.trim();
+    let warranty = document.getElementById('warranty').value.trim();
+    const image = document.getElementById('image').value.trim();
+
+    const descriptionElements = document.querySelectorAll('#discription-container .discription-pair');
+        const newProduct = { id, name, price: parseFloat(price), brand, warranty, image };
+
+        descriptionElements.forEach(pair => {
+            const key = pair.querySelector('.discription-key').value.trim();
+            const value = pair.querySelector('.discription-value').value.trim();
+            if (key) {
+                newProduct[key] = value;
             }
+        });
 
-            // Sử dụng FormData để gửi dữ liệu dạng multipart/form-data
-            const formData = new FormData();
-            formData.append('id', id);
-            formData.append('name', name);
-            formData.append('price', price);
-            formData.append('brand', brand);
-            formData.append('warranty', warranty);
+    if (/^\d+$/.test(warranty)) {
+        warranty = `${warranty} năm`;
+    }
 
-            if (imageFile) {
-                formData.append('image', imageFile);
-            }
+  
+    fetch('/api/sanpham', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProduct)
+    })
+    .then(res => res.json())
+    .then(addedProduct => {
+        const row = document.createElement('tr');
+        const imageUrl = addedProduct.image?.trim() || 'images/i9 -14900k.png';
+        row.innerHTML = `
+            <td><img src="${imageUrl}" style="width: 80px; height: auto;"></td>
+            <td>${addedProduct.id}</td>
+            <td>${addedProduct.name}</td>
+            <td>${parseFloat(addedProduct.price).toLocaleString()} VND</td>
+            <td>${addedProduct.brand}</td>
+            <td>${addedProduct.warranty}</td>
+        `;
+        document.getElementById('product-list').appendChild(row);
+        document.getElementById('add-product-form').style.display = 'none';
+        document.getElementById('name').value = '';
+        document.getElementById('price').value = '';
+        document.getElementById('brand').value = '';
+        document.getElementById('warranty').value = '';
+        document.getElementById('image').value = '';
+        document.getElementById('id').value = '';
+        document.getElementById('discription-container').innerHTML = `
+            <div class="discription-pair">
+                <input type="text" placeholder="Nhập Key" class="discription-key">
+                <span>:</span>
+                <input type="text" placeholder="Nhập Value" class="discription-value">
+            </div>`;
+            alert('Thêm sản phẩm thành công!');
+    })
+    .catch(() => alert('Không thể thêm sản phẩm. Vui lòng thử lại!'));
+});
 
-            fetch('/api/sanpham', {
-                method: 'POST',
-                body: formData // không set header Content-Type, trình duyệt tự set boundary
-            })
-                .then(response => response.json())
-                .then(newProduct => {
-                    const productList = document.getElementById('product-list');
-                    const row = document.createElement('tr');
-                    // newProduct.image là đường dẫn ảnh trả về từ server (ví dụ: "/images/filename.ext")
-                    const imageUrl = newProduct.image && newProduct.image.trim() !== '' ? newProduct.image : 'images/i9 -14900k.png';
+document.getElementById('add-many-product-btn').addEventListener('click', () => {
+    document.getElementById('file-upload').click();
+});
 
-                    row.innerHTML = `
-                        <td><img src="${imageUrl}" style="width: 80px; height: auto;"></td>
-                        <td>${newProduct.id}</td>
-                        <td>${newProduct.name}</td>
-                        <td>${parseFloat(newProduct.price).toLocaleString()} VND</td>
-                        <td>${newProduct.brand}</td>
-                        <td>${newProduct.warranty}</td>
-                    `;
-                    productList.appendChild(row);
+document.getElementById('file-upload').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
 
-                    // Reset form và ẩn form thêm sản phẩm
-                    document.getElementById('add-product-form').style.display = 'none';
-                    document.getElementById('name').value = '';
-                    document.getElementById('price').value = '';
-                    document.getElementById('brand').value = '';
-                    document.getElementById('warranty').value = '';
-                    document.getElementById('id').value = '';
-                    document.getElementById('image-upload').value = '';
-                })
-                .catch(error => {
-                    console.error('Lỗi khi thêm sản phẩm:', error);
-                    alert('Không thể thêm sản phẩm. Vui lòng thử lại!');
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const content = e.target.result;
+            let products = [];
+
+            if (file.name.endsWith('.json')) {
+                products = JSON.parse(content);
+            } else if (file.name.endsWith('.csv')) {
+                const lines = content.split('\n').filter(line => line.trim());
+                const headers = lines[0].split(',');
+                products = lines.slice(1).map(line => {
+                    const values = line.split(',');
+                    return headers.reduce((obj, h, i) => {
+                        obj[h.trim()] = values[i]?.trim();
+                        return obj;
+                    }, {});
                 });
-        });
+            }
 
+            if (!Array.isArray(products)) throw new Error('Dữ liệu không hợp lệ');
+            if (!confirm(`Đã tải ${products.length} sản phẩm. Bạn có muốn thêm không?`)) return;
 
-        // xử lý thêm nhiều sản phẩm 
-        document.getElementById('add-many-product-btn').addEventListener('click', () => {
-            document.getElementById('file-upload').click();
-        });
+            products.forEach(p => {
+                const prefix = p.id?.match(/^[A-Z]+X/)?.[0] || p.category?.normalize("NFD").replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase() + 'X';
+                const id = p.id || generateNextId(prefix);
+                const product = {
+                    id,
+                    name: p.name,
+                    price: parseFloat(p.price),
+                    brand: p.brand,
+                    warranty: p.warranty,
+                    image: p.image || ''
+                };
 
-        document.getElementById('file-upload').addEventListener('change', function () {
-            const file = this.files[0];
-            if (!file) return;
+                fetch('/api/sanpham', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(product)
+                })
+                .then(res => res.json())
+                .then(added => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><img src="${added.image || 'images/i9 -14900k.png'}" style="width: 80px; height: auto;"></td>
+                        <td>${added.id}</td>
+                        <td>${added.name}</td>
+                        <td>${parseFloat(added.price).toLocaleString()} VND</td>
+                        <td>${added.brand}</td>
+                        <td>${added.warranty}</td>
+                    `;
+                    document.getElementById('product-list').appendChild(row);
+                });
+            });
+        } catch (err) {
+            alert('Không thể đọc file: ' + err.message);
+        }
+    };
+    reader.readAsText(file);
+});
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                try {
-                    const content = e.target.result;
-                    let products;
-
-                    if (file.name.endsWith('.json')) {
-                        products = JSON.parse(content);
-                    } else if (file.name.endsWith('.csv')) {
-                        const lines = content.split('\n').filter(line => line.trim());
-                        const headers = lines[0].split(',');
-                        products = lines.slice(1).map(line => {
-                            const values = line.split(',');
-                            const obj = {};
-                            headers.forEach((h, i) => obj[h.trim()] = values[i]?.trim());
-                            return obj;
-                        });
-                    }
-
-                    if (!Array.isArray(products)) throw new Error('Dữ liệu không hợp lệ');
-
-                    if (!confirm(`Đã tải ${products.length} sản phẩm. Bạn có muốn thêm không?`)) return;
-
-                    products.forEach(p => {
-                        const prefix = p.id && typeof p.id === 'string' ? p.id.match(/^[A-Z]+X/)?.[0] : null;
-                        let id = p.id;
-                        if (!id || !prefix) {
-                            const cat = p.category || 'KHAX';
-                            const genPrefix = cat.normalize("NFD").replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase() + 'X';
-                            id = generateNextId(genPrefix);
-                        }
-                        const product = {
-                            id,
-                            name: p.name,
-                            price: parseFloat(p.price),
-                            brand: p.brand,
-                            warranty: p.warranty,
-                            image: p.image || ''
-                        };
-
-                        fetch('/api/sanpham', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(product)
-                        })
-                            .then(res => res.json())
-                            .then(added => {
-                                const row = document.createElement('tr');
-                                row.innerHTML = `
-                                    <td><img src="${added.image || 'images/i9 -14900k.png'}" style="width: 80px; height: auto;"></td>
-                                    <td>${added.id}</td>
-                                    <td>${added.name}</td>
-                                    <td>${parseFloat(added.price).toLocaleString()} VND</td>
-                                    <td>${added.brand}</td>
-                                    <td>${added.warranty}</td>
-                                `;
-                                document.getElementById('product-list').appendChild(row);
-                            });
-                    });
-                } catch (err) {
-                    alert('Không thể đọc file: ' + err.message);
-                }
-            };
-            reader.readAsText(file);
-        });
     </script>
 </body>
 

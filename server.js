@@ -8,7 +8,7 @@ const port = 3000;
 const url = "mongodb://127.0.0.1:27017";
 const client = new MongoClient(url);
 const dbName = "config";
-const collectionName = "product"; // Tên collection trong MongoDB
+const collectionName = "listProduct"; // Tên collection trong MongoDB
 
 // Cấu hình multer để lưu trữ ảnh trong thư mục 'public/images'
 const storage = multer.diskStorage({
@@ -64,15 +64,28 @@ app.get("/addProducts", (req, res) => {
 });
 
 // API để thêm sản phẩm và xử lý ảnh
-app.post("/api/sanpham", upload.single("image"), async (req, res) => {
+app.post("/api/sanpham", upload.single("image"), async (req, res) => { 
   const { id, name, price, brand, warranty } = req.body;
-  const image = req.file ? `/images/${req.file.filename}` : '';  // Lưu đường dẫn ảnh vào MongoDB
+  const image = req.file ? `/images/${req.file.filename}` : '';
 
   if (!id || !name || !price || !brand || !warranty) {
     return res.status(400).json({ error: "Vui lòng cung cấp đầy đủ thông tin sản phẩm!" });
   }
 
-  const newProduct = { id, name, price: parseInt(price), brand, warranty, image };
+  const newProduct = { 
+    id, 
+    name, 
+    price: parseInt(price), 
+    brand, 
+    warranty, 
+    image
+  };
+
+  for (const key in req.body) {
+    if (!['id', 'name', 'price', 'brand', 'warranty'].includes(key)) {
+      newProduct[key] = req.body[key];  // Nhét trực tiếp key-value vào object gốc
+    }
+  }
 
   try {
     await client.connect();
@@ -87,6 +100,7 @@ app.post("/api/sanpham", upload.single("image"), async (req, res) => {
     await client.close();
   }
 });
+
 
 // API để xóa sản phẩm
 app.delete("/api/sanpham/:id", async (req, res) => {
