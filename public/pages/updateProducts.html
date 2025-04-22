@@ -212,6 +212,34 @@
       border-radius: 4px;
       margin-top: 10px;
     }
+
+    /* Toast Notification */
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #4caf50;
+      color: white;
+      text-align: center;
+      border-radius: 4px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1000;
+      left: 50%;
+      bottom: 30px;
+      font-size: 17px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: visibility 0s, opacity 0.5s ease-in-out;
+    }
+
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    #toast.hide {
+      opacity: 0;
+    }
   </style>
 </head>
 
@@ -311,6 +339,8 @@
     <option value="24 tháng"></option>
     <option value="36 tháng"></option>
   </datalist>
+
+  <div id="toast">Cập nhật sản phẩm thành công!</div>
 
   <!-- Thêm các hàm xử lý cập nhật vào trong thẻ script -->
 
@@ -492,7 +522,7 @@
           throw new Error("Không thể cập nhật sản phẩm");
         }
 
-        alert("Cập nhật sản phẩm thành công!");
+        showToast("Cập nhật sản phẩm thành công!");
         document.getElementById("update-form-container").style.display = "none";
         applyFilters(); // Tải lại danh sách sản phẩm
       } catch (err) {
@@ -500,6 +530,17 @@
         alert("Đã xảy ra lỗi khi cập nhật sản phẩm.");
       }
     });
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = "show";
+
+      setTimeout(() => {
+        toast.className = "hide";
+        setTimeout(() => (toast.style.visibility = "hidden"), 500);
+      }, 3000);
+    }
 
     fetchProducts();
   </script>

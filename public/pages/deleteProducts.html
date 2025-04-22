@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Danh sách sản phẩm</title>
+  <title>Xóa sản phẩm</title>
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -203,6 +203,102 @@
     #pagination-controls button:hover {
       background-color: #adb5bd;
     }
+
+    /* Modal xác nhận */
+    #confirmModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    #confirmModal .modal-content {
+      background: #fff;
+      padding: 20px;
+      max-width: 400px;
+      margin: 100px auto;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    #confirmModal .modal-content p {
+      font-size: 16px;
+      color: #343a40;
+      margin-bottom: 20px;
+    }
+
+    #confirmModal .modal-content button {
+      padding: 10px 20px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #confirmModal .modal-content button#confirmYes {
+      background-color: #f44336;
+      color: white;
+      margin-right: 10px;
+    }
+
+    #confirmModal .modal-content button#confirmYes:hover {
+      background-color: #e53935;
+    }
+
+    #confirmModal .modal-content button#confirmNo {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    #confirmModal .modal-content button#confirmNo:hover {
+      background-color: #5a6268;
+    }
+
+    /* Hiệu ứng fade-in */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #4caf50;
+      color: white;
+      text-align: center;
+      border-radius: 4px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1000;
+      left: 50%;
+      bottom: 30px;
+      font-size: 17px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: visibility 0s, opacity 0.5s ease-in-out;
+    }
+
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    #toast.hide {
+      opacity: 0;
+    }
   </style>
 </head>
 
@@ -249,13 +345,15 @@
   </div>
 
   <!-- Modal xác nhận -->
-  <div id="confirmModal" style="display:none; position: fixed; top:0; left:0; width: 100%; height:100%; background: rgba(0,0,0,0.5);">
-    <div style="background: #fff; padding: 20px; max-width: 300px; margin: 100px auto; border-radius: 5px; text-align: center;">
+  <div id="confirmModal">
+    <div class="modal-content">
       <p id="confirmMessage">Bạn có chắc muốn xóa sản phẩm này?</p>
-      <button id="confirmYes" style="margin-right: 10px;">Có</button>
+      <button id="confirmYes">Có</button>
       <button id="confirmNo">Không</button>
     </div>
   </div>
+
+  <div id="toast"></div>
 
   <script>
     let currentPage = 1;
@@ -273,13 +371,11 @@
     function applyFilters() {
       const params = new URLSearchParams();
 
-      // Thêm các tham số lọc nếu có
       if (currentFilters.minPrice) params.append("minPrice", currentFilters.minPrice);
       if (currentFilters.maxPrice) params.append("maxPrice", currentFilters.maxPrice);
       if (currentFilters.category) params.append("category", currentFilters.category);
       if (currentFilters.searchQuery) params.append("searchQuery", currentFilters.searchQuery);
 
-      // Thêm phân trang
       params.append("page", currentPage);
       params.append("limit", limit);
 
@@ -354,7 +450,7 @@
       container.innerHTML = "";
 
       products.forEach(p => {
-        const imageUrl = p.image && p.image.trim() !== "" ? p.image : "images/default-product.png";
+        const imageUrl = p.image && p.image.trim() !== "" ? p.image : " images/Ram Corsair vengeance lpx 1x16gb.png";
 
         const card = document.createElement("div");
         card.className = "product-card";
@@ -410,20 +506,33 @@
     async function deleteProduct(productId) {
       const confirmed = await customConfirm("Bạn có chắc muốn xóa sản phẩm này?");
       if (!confirmed) return;
+
       try {
         const res = await fetch(`/api/sanpham/${productId}`, {
           method: "DELETE",
         });
+
         if (res.ok) {
-          alert("Sản phẩm đã được xóa!");
-          applyFilters(); // Tải lại danh sách sản phẩm
+          showToast("Sản phẩm đã được xóa thành công!");
+          applyFilters(); // Làm mới danh sách sản phẩm
         } else {
-          alert("Không thể xóa sản phẩm.");
+          showToast("Không thể xóa sản phẩm.", true);
         }
       } catch (err) {
         console.error(err);
-        alert("Đã xảy ra lỗi khi xóa sản phẩm.");
+        showToast("Đã xảy ra lỗi khi xóa sản phẩm.", true);
       }
+    }
+
+    function showToast(message, isError = false) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.style.backgroundColor = isError ? "#f44336" : "#4caf50"; // Đỏ cho lỗi, xanh cho thành công
+      toast.className = "show";
+
+      setTimeout(() => {
+        toast.className = toast.className.replace("show", "");
+      }, 3000);
     }
 
     fetchProducts(); // Gọi hàm fetchProducts khi trang được tải
