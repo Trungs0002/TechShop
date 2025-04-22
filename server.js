@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const { MongoClient } = require("mongodb");
+const multer = require("multer");
 const app = express();
 const port = 3000;
 
@@ -9,76 +10,69 @@ const client = new MongoClient(url);
 const dbName = "config";
 const collectionName = "listProduct"; // Tên collection trong MongoDB
 
+// Cấu hình multer để lưu trữ ảnh trong thư mục 'public/images'
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, 'public', 'images'));  // Đường dẫn lưu ảnh
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));  // Tạo tên ảnh duy nhất
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// Middleware để phục vụ file tĩnh (HTML, CSS, Images)
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public/images")));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Kết nối MongoDB
 async function connectToMongoDB() {
   try {
-    // Kết nối đến MongoDB
     await client.connect();
     console.log("Connected successfully to MongoDB server");
-
-    // Truy cập cơ sở dữ liệu
     const db = client.db(dbName);
-
-    // Truy cập collection
     const collection = db.collection(collectionName);
-
-    // Đếm số lượng documents trong collection
     const count = await collection.countDocuments();
-    console.log(` Number of documents in "${collectionName}": ${count}`);
+    console.log(`Number of documents in "${collectionName}": ${count}`);
   } catch (err) {
     console.error("Error connecting to MongoDB:", err);
-  } finally {
-    // Đóng kết nối
-    await client.close();
-    console.log("MongoDB connection closed");
   }
-}
-
-// Cấu hình để phục vụ file tĩnh (HTML, CSS)
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.static(path.join(__dirname, "public/pages")));
-app.use(express.static(path.join(__dirname, "public/images")));
-
-// Middleware để xử lý dữ liệu từ form
-// app.use(express.json());
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
-
-async function getProductsFromMongoDB() {
-  await client.connect();
-  const db = client.db(dbName);
-  const collection = db.collection(collectionName);
-  const data = await collection.find({}).toArray();
-  return data;
 }
 
 // API để lấy danh sách sản phẩm
 app.get("/api/sanpham", async (req, res) => {
   try {
-    const products = await getProductsFromMongoDB();
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName);
+    const products = await collection.find({}).toArray();
     res.json(products);
   } catch (error) {
     res.status(500).json({ error: "Lỗi server khi lấy dữ liệu" });
+  } finally {
+    await client.close();
   }
 });
 
 // Route để trả về file addProducts.html trong thư mục public/pages
 app.get("/addProducts", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/pages/addProducts.html"));
+  res.sendFile(path.join(__dirname, "public/pages", "addProducts.html"));
 });
 
-app.get("/deleteProducts", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/pages/deleteProducts.html"));
-});
-
-// thêm vào database nẹ
-app.post("/api/sanpham", async (req, res) => {
+// API để thêm sản phẩm và xử lý ảnh
+app.post("/api/sanpham", upload.single("image"), async (req, res) => {
   const { id, name, price, brand, warranty } = req.body;
+  const image = req.file ? `/images/${req.file.filename}` : '';  // Lưu đường dẫn ảnh vào MongoDB
 
   if (!id || !name || !price || !brand || !warranty) {
     return res.status(400).json({ error: "Vui lòng cung cấp đầy đủ thông tin sản phẩm!" });
   }
 
-  const newProduct = { id, name, price: parseInt(price), brand, warranty };
+  const newProduct = { id, name, price: parseInt(price), brand, warranty, image };
 
   try {
     await client.connect();
@@ -111,74 +105,6 @@ app.delete("/api/sanpham/:id", async (req, res) => {
   } catch (error) {
     console.error("Error deleting product:", error);
     res.status(500).send({ message: "Lỗi server khi xóa sản phẩm!" });
-  } finally {
-    await client.close();
-  }
-});
-
-// Route chính để trả về file index.html trong thư mục public/pages
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/pages", "index.html"));
-});
-
-// Route để trả về file FProducts.html trong thư mục public/pages
-app.get("/fProducts", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/pages/readProducts.html"));
-});
-
-// API để lọc sản phẩm
-app.get("/api/sanpham/filter", async (req, res) => {
-  const { minPrice, maxPrice, category, page = 1, limit = 10 } = req.query;
-
-  const query = {};
-
-  // Lọc theo giá
-  if (minPrice) query.price = { ...query.price, $gte: parseInt(minPrice) };
-  if (maxPrice) query.price = { ...query.price, $lte: parseInt(maxPrice) };
-
-  // Lọc theo loại sản phẩm dựa trên 4 ký tự đầu của id
-  if (category) query.id = { $regex: `^${category}` };
-
-  try {
-    await client.connect();
-    const db = client.db(dbName);
-    const collection = db.collection(collectionName);
-
-    const skip = (parseInt(page) - 1) * parseInt(limit); // Tính số lượng bản ghi cần bỏ qua
-    const products = await collection.find(query).skip(skip).limit(parseInt(limit)).toArray();
-    const total = await collection.countDocuments(query);
-
-    res.json({ products, total });
-  } catch (err) {
-    console.error("Error fetching products:", err);
-    res.status(500).json({ error: "Lỗi server khi lấy dữ liệu" });
-  } finally {
-    await client.close();
-  }
-});
-
-// Route để trả về updateProducts.html
-app.get("/updateProducts", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/pages/updateProducts.html"));
-});
-
-// API để lấy chi tiết sản phẩm theo ID
-app.get("/api/sanpham/:id", async (req, res) => {
-  const productId = req.params.id;
-  try {
-    await client.connect();
-    const db = client.db(dbName);
-    const collection = db.collection(collectionName);
-
-    const product = await collection.findOne({ id: productId });
-    if (!product) {
-      res.status(404).send({ message: "Không tìm thấy sản phẩm!" });
-    } else {
-      res.status(200).json(product);
-    }
-  } catch (error) {
-    console.error("Error getting product:", error);
-    res.status(500).send({ message: "Lỗi server khi lấy thông tin sản phẩm!" });
   } finally {
     await client.close();
   }
@@ -226,9 +152,105 @@ app.put("/api/sanpham/:id", async (req, res) => {
   }
 });
 
+// Route chính để trả về file index.html trong thư mục public/pages
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/pages", "index.html"));
+});
+
+// Route để trả về file FProducts.html trong thư mục public/pages
+app.get("/fProducts", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/pages", "readProducts.html"));
+});
+
+// API để lọc sản phẩm
+app.get("/api/sanpham/filter", async (req, res) => {
+  const { minPrice, maxPrice, category, page = 1, limit = 10 } = req.query;
+
+  const query = {};
+
+  // Lọc theo giá
+  if (minPrice) query.price = { ...query.price, $gte: parseInt(minPrice) };
+  if (maxPrice) query.price = { ...query.price, $lte: parseInt(maxPrice) };
+
+  // Lọc theo loại sản phẩm dựa trên 4 ký tự đầu của id
+  if (category) query.id = { $regex: `^${category}` };
+
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName);
+
+    const skip = (parseInt(page) - 1) * parseInt(limit); // Tính số lượng bản ghi cần bỏ qua
+    const products = await collection.find(query).skip(skip).limit(parseInt(limit)).toArray();
+    const total = await collection.countDocuments(query);
+
+    res.json({ products, total });
+  } catch (err) {
+    console.error("Error fetching products:", err);
+    res.status(500).json({ error: "Lỗi server khi lấy dữ liệu" });
+  } finally {
+    await client.close();
+  }
+});
+
+// Route để trả về updateProducts.html
+app.get("/updateProducts", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/pages", "updateProducts.html"));
+});
+
+// Route để trả về file deleteProducts.html trong thư mục public/pages
+app.get("/deleteProducts", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/pages", "deleteProducts.html"));
+});
+
+// API để lấy chi tiết sản phẩm theo ID
+app.get("/api/sanpham/:id", async (req, res) => {
+  const productId = req.params.id;
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName);
+
+    const product = await collection.findOne({ id: productId });
+    if (!product) {
+      res.status(404).send({ message: "Không tìm thấy sản phẩm!" });
+    } else {
+      res.status(200).json(product);
+    }
+  } catch (error) {
+    console.error("Error getting product:", error);
+    res.status(500).send({ message: "Lỗi server khi lấy thông tin sản phẩm!" });
+  } finally {
+    await client.close();
+  }
+});
+
+// Các phần code khác trong script giữ nguyên ...
+
+async function deleteProduct(productId) {
+    if (confirm("Bạn có thật sự muốn xóa sản phẩm này không?")) {
+        try {
+            const res = await fetch(`/api/sanpham/${productId}`, {
+                method: "DELETE",
+            });
+            if (res.ok) {
+                showCardMessage("Sản phẩm đã được xóa!", "success");
+                applyFilters(); // Tải lại danh sách sản phẩm
+            } else {
+                showCardMessage("Không thể xóa sản phẩm.", "error");
+            }
+        } catch (error) {
+            console.error("Error deleting product:", error);
+            showCardMessage("Lỗi khi xóa sản phẩm.", "error");
+        }
+    }
+}
+
+// Đảm bảo các function renderCards, renderPagination và applyFilters được đóng ngoặc và kết thúc đúng
+// Và kết thúc file script bằng dấu đóng </script>
+
+// Lắng nghe server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
   connectToMongoDB(); // chỉ chạy 1 lần khi khởi động server
 });
-
-// test commit
