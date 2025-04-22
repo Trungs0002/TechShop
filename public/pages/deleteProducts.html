@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Danh sách sản phẩm</title>
@@ -22,7 +23,8 @@
       margin-bottom: 20px;
     }
 
-    #searchForm input, #searchForm button {
+    #searchForm input,
+    #searchForm button {
       padding: 10px;
       font-size: 14px;
     }
@@ -149,8 +151,69 @@
     .message-card.error {
       background-color: #f44336;
     }
+
+    /* Card xác nhận */
+    .confirm-card {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      text-align: center;
+      z-index: 1000;
+      width: 300px;
+    }
+
+    .confirm-card.hidden {
+      display: none;
+    }
+
+    .confirm-card p {
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .confirm-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .btn-confirm {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-confirm:hover {
+      background-color: #45a049;
+    }
+
+    .btn-cancel {
+      padding: 10px 15px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+      background-color: #e53935;
+    }
   </style>
 </head>
+
 <body>
   <h1>Danh sách sản phẩm</h1>
   <div id="messageContainer"></div>
@@ -187,6 +250,14 @@
     <button id="prevPage">Trang trước</button>
     <span id="pagination"></span>
     <button id="nextPage">Trang sau</button>
+  </div>
+
+  <div id="confirmCard" class="confirm-card hidden">
+    <p id="confirmMessage">Bạn có thật sự muốn xóa sản phẩm này không?</p>
+    <div class="confirm-actions">
+      <button id="confirmYes" class="btn-confirm">Đồng ý</button>
+      <button id="confirmNo" class="btn-cancel">Hủy</button>
+    </div>
   </div>
 
   <script>
@@ -301,7 +372,7 @@
     }
 
     async function deleteProduct(productId) {
-      if (confirm("Bạn có thật sự muốn xóa sản phẩm này không?")) {
+      showConfirmCard("Bạn có thật sự muốn xóa sản phẩm này không?", async () => {
         try {
           const res = await fetch(`/api/sanpham/${productId}`, {
             method: "DELETE",
@@ -316,10 +387,33 @@
           console.error(err);
           showCardMessage("Đã xảy ra lỗi khi xóa sản phẩm.", "error");
         }
-      }
+      });
+    }
+
+    function showConfirmCard(message, onConfirm) {
+      const confirmCard = document.getElementById("confirmCard");
+      const confirmMessage = document.getElementById("confirmMessage");
+      const confirmYes = document.getElementById("confirmYes");
+      const confirmNo = document.getElementById("confirmNo");
+
+      // Hiển thị card xác nhận
+      confirmMessage.textContent = message;
+      confirmCard.classList.remove("hidden");
+
+      // Xử lý khi nhấn "Đồng ý"
+      confirmYes.onclick = () => {
+        confirmCard.classList.add("hidden");
+        onConfirm(); // Gọi callback khi người dùng xác nhận
+      };
+
+      // Xử lý khi nhấn "Hủy"
+      confirmNo.onclick = () => {
+        confirmCard.classList.add("hidden");
+      };
     }
 
     fetchProducts(); // Gọi hàm fetchProducts khi trang được tải
   </script>
 </body>
+
 </html>
