@@ -8,7 +8,7 @@ const port = 3000;
 const url = "mongodb://127.0.0.1:27017";
 const client = new MongoClient(url);
 const dbName = "config";
-const collectionName = "listProduct"; // Tên collection trong MongoDB
+const collectionName = "product"; // Tên collection trong MongoDB
 
 // Cấu hình multer để lưu trữ ảnh trong thư mục 'public/images'
 const storage = multer.diskStorage({
