@@ -2,221 +2,217 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Xóa sản phẩm</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Danh sách sản phẩm</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav#mainMenu {
+      background-color: #0d6efd;
+      padding: 12px 0;
+    }
+
+    nav#mainMenu ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+      gap: 20px;
+    }
+
+    nav#mainMenu ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 15px;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+
+    nav#mainMenu ul li a:hover {
+      background-color: #084298;
     }
 
     h1 {
       text-align: center;
+      margin: 30px 0 10px;
+      font-size: 32px;
+      color: #343a40;
+    }
+
+    /* Tìm kiếm */
+    #searchForm {
+      display: flex;
+      justify-content: flex-start;
+      gap: 12px;
+      margin-bottom: 30px;
+      padding-left: 40px;
+    }
+
+    #searchInput {
+      width: 300px;
+      padding: 12px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    #searchButton {
+      padding: 12px 20px;
+      font-size: 15px;
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    #searchButton:hover {
+      background-color: #084298;
+    }
+
+    /* Bộ lọc */
+    #filterContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+      padding-left: 40px;
       margin-bottom: 20px;
     }
 
-    #searchForm {
+    #filterContainer h3 {
+      margin-bottom: 5px;
+      color: #495057;
+    }
+
+    #filterContainer div {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      justify-content: center;
-      margin-bottom: 20px;
     }
 
-    #searchForm input,
-    #searchForm button {
-      padding: 10px;
+    #filterContainer button {
+      padding: 10px 15px;
       font-size: 14px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      background-color: #ffffff;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    #filterContainer button.active,
+    #filterContainer button:hover {
+      background-color: #0d6efd;
+      color: white;
+      border-color: #0d6efd;
     }
 
     #productContainer {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
+      padding: 20px 40px;
     }
 
     .product-card {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 16px;
       background-color: #fff;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 16px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .product-card h3 {
-      font-size: 18px;
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-card img {
+      max-width: 100%;
+      max-height: 140px;
+      object-fit: contain;
+      border-radius: 8px;
       margin-bottom: 10px;
     }
 
-    .product-card p {
-      margin: 5px 0;
-      font-size: 14px;
-      color: #555;
+    .product-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #212529;
+      margin: 10px 0 5px;
+      text-align: center;
+      min-height: 40px;
     }
 
-    .product-card .price {
-      font-size: 16px;
-      font-weight: bold;
-      color: #007BFF;
+    .product-card p.price {
+      color: #198754;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .product-card p {
+      font-size: 14px;
+      color: #6c757d;
+      margin: 2px 0;
+    }
+
+    .product-card button {
+      margin-top: auto;
+      padding: 10px 15px;
+      background-color: #f44336;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .product-card button:hover {
+      background-color: #e53935;
     }
 
     #pagination-controls {
       display: flex;
       justify-content: center;
-      gap: 12px;
-      margin-top: 20px;
+      gap: 10px;
+      margin: 30px 0;
     }
 
     #pagination-controls button {
       padding: 10px 20px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .product-card img {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-
-    #filterContainer {
-      margin-bottom: 20px;
-    }
-
-    #filterContainer h3 {
-      margin: 10px 0;
-    }
-
-    #filterContainer div {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    #filterContainer button {
-      padding: 10px 15px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background-color: #f8f9fa;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    #filterContainer button:hover {
-      background-color: #007BFF;
-      color: white;
-    }
-
-    #filterContainer button.active {
-      background-color: #007BFF;
-      color: white;
-    }
-
-    .btn-delete {
-      padding: 5px 10px;
-      background-color: #f44336;
-      color: white;
+      background-color: #dee2e6;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
 
-    .btn-delete:hover {
-      background-color: #e53935;
-    }
-
-    #messageContainer {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-    }
-
-    .message-card {
-      padding: 10px 20px;
-      border-radius: 5px;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      color: #fff;
-      font-size: 16px;
-    }
-
-    .message-card.success {
-      background-color: #4CAF50;
-    }
-
-    .message-card.error {
-      background-color: #f44336;
-    }
-
-    /* Card xác nhận */
-    .confirm-card {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      padding: 20px;
-      text-align: center;
-      z-index: 1000;
-      width: 300px;
-    }
-
-    .confirm-card.hidden {
-      display: none;
-    }
-
-    .confirm-card p {
-      font-size: 16px;
-      margin-bottom: 20px;
-      color: #333;
-    }
-
-    .confirm-actions {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .btn-confirm {
-      padding: 10px 15px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .btn-confirm:hover {
-      background-color: #45a049;
-    }
-
-    .btn-cancel {
-      padding: 10px 15px;
-      background-color: #f44336;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .btn-cancel:hover {
-      background-color: #e53935;
+    #pagination-controls button:hover {
+      background-color: #adb5bd;
     }
   </style>
 </head>
 
 <body>
-  <h1>Xóa sản phẩm</h1>
-  <div id="messageContainer"></div>
+  <h1>Danh sách sản phẩm</h1>
+
+  <div id="searchForm">
+    <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm...">
+    <button id="searchButton">Tìm kiếm</button>
+  </div>
 
   <div id="filterContainer">
     <h3>Giá</h3>
@@ -252,11 +248,12 @@
     <button id="nextPage">Trang sau</button>
   </div>
 
-  <div id="confirmCard" class="confirm-card hidden">
-    <p id="confirmMessage">Bạn có thật sự muốn xóa sản phẩm này không?</p>
-    <div class="confirm-actions">
-      <button id="confirmYes" class="btn-confirm">Đồng ý</button>
-      <button id="confirmNo" class="btn-cancel">Hủy</button>
+  <!-- Modal xác nhận -->
+  <div id="confirmModal" style="display:none; position: fixed; top:0; left:0; width: 100%; height:100%; background: rgba(0,0,0,0.5);">
+    <div style="background: #fff; padding: 20px; max-width: 300px; margin: 100px auto; border-radius: 5px; text-align: center;">
+      <p id="confirmMessage">Bạn có chắc muốn xóa sản phẩm này?</p>
+      <button id="confirmYes" style="margin-right: 10px;">Có</button>
+      <button id="confirmNo">Không</button>
     </div>
   </div>
 
@@ -266,46 +263,80 @@
     let totalPages = 1;
 
     let currentFilters = {
+      searchQuery: "",
       minPrice: "",
       maxPrice: "",
       category: ""
     };
 
+    // Áp dụng bộ lọc
     function applyFilters() {
-      const params = new URLSearchParams({
-        minPrice: currentFilters.minPrice,
-        maxPrice: currentFilters.maxPrice,
-        category: currentFilters.category,
-        page: currentPage,
-        limit
-      });
+      const params = new URLSearchParams();
 
-      console.log(`/api/sanpham/filter?${params.toString()}`); // Debug URL
+      // Thêm các tham số lọc nếu có
+      if (currentFilters.minPrice) params.append("minPrice", currentFilters.minPrice);
+      if (currentFilters.maxPrice) params.append("maxPrice", currentFilters.maxPrice);
+      if (currentFilters.category) params.append("category", currentFilters.category);
+      if (currentFilters.searchQuery) params.append("searchQuery", currentFilters.searchQuery);
+
+      // Thêm phân trang
+      params.append("page", currentPage);
+      params.append("limit", limit);
+
       fetchProducts(currentPage, params.toString());
     }
 
+    // Tìm kiếm sản phẩm
+    document.getElementById('searchButton').addEventListener('click', () => {
+      const searchQuery = document.getElementById('searchInput').value.trim();
+      currentFilters.searchQuery = searchQuery; // Thêm thuộc tính tìm kiếm
+      currentPage = 1; // Reset trang về 1
+      applyFilters();
+    });
+
+    // Lọc theo giá
     document.querySelectorAll("#priceFilters button").forEach(button => {
       button.addEventListener("click", () => {
-        document.querySelectorAll("#priceFilters button").forEach(btn => btn.classList.remove("active"));
-        button.classList.add("active");
+        const isActive = button.classList.contains("active");
 
-        currentFilters.minPrice = button.getAttribute("data-min");
-        currentFilters.maxPrice = button.getAttribute("data-max");
+        // Bỏ trạng thái active khỏi tất cả các nút
+        document.querySelectorAll("#priceFilters button").forEach(btn => btn.classList.remove("active"));
+
+        if (!isActive) {
+          // Nếu nút chưa active, áp dụng bộ lọc
+          button.classList.add("active");
+          currentFilters.minPrice = button.getAttribute("data-min");
+          currentFilters.maxPrice = button.getAttribute("data-max");
+        } else {
+          // Nếu nút đang active, bỏ lọc
+          currentFilters.minPrice = "";
+          currentFilters.maxPrice = "";
+        }
+
         currentPage = 1; // Reset trang về 1 khi thay đổi filter
         applyFilters();
       });
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      document.querySelectorAll("#categoryFilters button").forEach(button => {
-        button.addEventListener("click", () => {
-          document.querySelectorAll("#categoryFilters button").forEach(btn => btn.classList.remove("active"));
-          button.classList.add("active");
+    // Lọc theo loại sản phẩm
+    document.querySelectorAll("#categoryFilters button").forEach(button => {
+      button.addEventListener("click", () => {
+        const isActive = button.classList.contains("active");
 
+        // Bỏ trạng thái active khỏi tất cả các nút
+        document.querySelectorAll("#categoryFilters button").forEach(btn => btn.classList.remove("active"));
+
+        if (!isActive) {
+          // Nếu nút chưa active, áp dụng bộ lọc
+          button.classList.add("active");
           currentFilters.category = button.getAttribute("data-category");
-          currentPage = 1; // Reset trang về 1 khi thay đổi filter
-          applyFilters();
-        });
+        } else {
+          // Nếu nút đang active, bỏ lọc
+          currentFilters.category = "";
+        }
+
+        currentPage = 1; // Reset trang về 1 khi thay đổi filter
+        applyFilters();
       });
     });
 
@@ -323,7 +354,7 @@
       container.innerHTML = "";
 
       products.forEach(p => {
-        const imageUrl = p.image && p.image.trim() !== "" ? p.image : "images/i9 -14900k.png";
+        const imageUrl = p.image && p.image.trim() !== "" ? p.image : "images/default-product.png";
 
         const card = document.createElement("div");
         card.className = "product-card";
@@ -359,57 +390,40 @@
       }
     });
 
-    function showCardMessage(message, type) {
-      const messageContainer = document.getElementById("messageContainer");
-      const messageCard = document.createElement("div");
-      messageCard.className = `message-card ${type}`;
-      messageCard.textContent = message;
-      messageContainer.appendChild(messageCard);
-
-      setTimeout(() => {
-        messageContainer.removeChild(messageCard);
-      }, 3000);
-    }
-
-    async function deleteProduct(productId) {
-      showConfirmCard("Bạn có thật sự muốn xóa sản phẩm này không?", async () => {
-        try {
-          const res = await fetch(`/api/sanpham/${productId}`, {
-            method: "DELETE",
-          });
-          if (res.ok) {
-            showCardMessage("Sản phẩm đã được xóa!", "success");
-            applyFilters(); // Tải lại danh sách sản phẩm
-          } else {
-            showCardMessage("Không thể xóa sản phẩm.", "error");
-          }
-        } catch (err) {
-          console.error(err);
-          showCardMessage("Đã xảy ra lỗi khi xóa sản phẩm.", "error");
-        }
+    // Hàm hiển thị modal xác nhận trả về Promise kết quả
+    function customConfirm(message) {
+      return new Promise((resolve) => {
+        document.getElementById('confirmMessage').textContent = message;
+        document.getElementById('confirmModal').style.display = 'block';
+        document.getElementById('confirmYes').onclick = function() {
+          document.getElementById('confirmModal').style.display = 'none';
+          resolve(true);
+        };
+        document.getElementById('confirmNo').onclick = function() {
+          document.getElementById('confirmModal').style.display = 'none';
+          resolve(false);
+        };
       });
     }
 
-    function showConfirmCard(message, onConfirm) {
-      const confirmCard = document.getElementById("confirmCard");
-      const confirmMessage = document.getElementById("confirmMessage");
-      const confirmYes = document.getElementById("confirmYes");
-      const confirmNo = document.getElementById("confirmNo");
-
-      // Hiển thị card xác nhận
-      confirmMessage.textContent = message;
-      confirmCard.classList.remove("hidden");
-
-      // Xử lý khi nhấn "Đồng ý"
-      confirmYes.onclick = () => {
-        confirmCard.classList.add("hidden");
-        onConfirm(); // Gọi callback khi người dùng xác nhận
-      };
-
-      // Xử lý khi nhấn "Hủy"
-      confirmNo.onclick = () => {
-        confirmCard.classList.add("hidden");
-      };
+    // Cập nhật hàm deleteProduct sử dụng customConfirm
+    async function deleteProduct(productId) {
+      const confirmed = await customConfirm("Bạn có chắc muốn xóa sản phẩm này?");
+      if (!confirmed) return;
+      try {
+        const res = await fetch(`/api/sanpham/${productId}`, {
+          method: "DELETE",
+        });
+        if (res.ok) {
+          alert("Sản phẩm đã được xóa!");
+          applyFilters(); // Tải lại danh sách sản phẩm
+        } else {
+          alert("Không thể xóa sản phẩm.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Đã xảy ra lỗi khi xóa sản phẩm.");
+      }
     }
 
     fetchProducts(); // Gọi hàm fetchProducts khi trang được tải
