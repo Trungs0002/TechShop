@@ -364,11 +364,19 @@
 
       document.querySelectorAll("#priceFilters button").forEach((button) => {
         button.addEventListener("click", () => {
-          document.querySelectorAll("#priceFilters button").forEach((btn) => btn.classList.remove("active"));
-          button.classList.add("active");
-
-          currentFilters.minPrice = button.getAttribute("data-min");
-          currentFilters.maxPrice = button.getAttribute("data-max");
+          // Nếu nút đã active, bỏ active và reset giá trị lọc
+          if (button.classList.contains("active")) {
+            button.classList.remove("active");
+            currentFilters.minPrice = "";
+            currentFilters.maxPrice = "";
+          } else {
+            // Nếu chưa active, bỏ active các nút khác và active nút hiện tại
+            document.querySelectorAll("#priceFilters button").forEach((btn) => btn.classList.remove("active"));
+            button.classList.add("active");
+            currentFilters.minPrice = button.getAttribute("data-min");
+            currentFilters.maxPrice = button.getAttribute("data-max");
+          }
+          currentPage = 1; // Reset trang khi thay đổi bộ lọc giá
           applyFilters();
         });
       });
@@ -376,11 +384,17 @@
       document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll("#categoryFilters button").forEach((button) => {
           button.addEventListener("click", () => {
-            document.querySelectorAll("#categoryFilters button").forEach((btn) => btn.classList.remove("active"));
-            button.classList.add("active");
-
-            currentFilters.category = button.getAttribute("data-category");
-
+            // Nếu nút đã active, bỏ active và reset giá trị lọc
+            if (button.classList.contains("active")) {
+              button.classList.remove("active");
+              currentFilters.category = "";
+            } else {
+              // Nếu chưa active, bỏ active các nút khác và active nút hiện tại
+              document.querySelectorAll("#categoryFilters button").forEach((btn) => btn.classList.remove("active"));
+              button.classList.add("active");
+              currentFilters.category = button.getAttribute("data-category");
+            }
+            currentPage = 1; // Reset trang khi thay đổi bộ lọc loại
             applyFilters();
           });
         });
@@ -483,6 +497,8 @@
       // Xử lý sự kiện hủy cập nhật
       document.getElementById("cancel-update-btn").addEventListener("click", () => {
         document.getElementById("update-form-container").style.display = "none";
+        // Reset input file
+        document.getElementById("update-image-upload").value = "";
       });
 
       // Xử lý sự kiện lưu cập nhật
@@ -518,6 +534,8 @@
 
           showToast("Cập nhật sản phẩm thành công!");
           document.getElementById("update-form-container").style.display = "none";
+          // Reset input file
+          document.getElementById("update-image-upload").value = "";
           applyFilters(); // Tải lại danh sách sản phẩm
         } catch (err) {
           console.error(err);
@@ -527,12 +545,24 @@
 
       function showToast(message) {
         const toast = document.getElementById("toast");
+
+        // Reset trạng thái của toast trước khi hiển thị thông báo mới
+        toast.style.visibility = "hidden";
+        toast.className = "";
+
+        // Đặt nội dung thông báo
         toast.textContent = message;
+
+        // Hiển thị toast
+        toast.style.visibility = "visible";
         toast.className = "show";
 
+        // Ẩn toast sau 3 giây
         setTimeout(() => {
           toast.className = "hide";
-          setTimeout(() => (toast.style.visibility = "hidden"), 500);
+          setTimeout(() => {
+            toast.style.visibility = "hidden";
+          }, 500);
         }, 3000);
       }
 
