@@ -1,464 +1,634 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh sách sản phẩm</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thêm sản phẩm</title>
     <style>
-        :root {
-            --primary-color: #4CAF50;
-            --danger-color: #f44336;
-            --light-bg: #f9f9f9;
-            --border-color: #ddd;
-            --text-color: #333;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+      /* ===== KIỂU CĂN BẢN & KHỞI TẠO ===== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff;
-            margin: 0;
-            padding: 40px;
-            color: var(--text-color);
-        }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+      }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+      /* Thêm CSS để ẩn các phần tử có class hidden */
+      .hidden {
+        display: none !important;
+      }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            box-shadow: var(--shadow);
-        }
+      /* ===== KIỂU TIÊU ĐỀ ===== */
+      h1 {
+        text-align: center;
+        margin: 30px 0;
+        color: #2c3e50;
+        font-size: 2.5rem;
+        font-weight: 600;
+      }
 
-        th,
-        td {
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            text-align: left;
-        }
+      /* ===== KIỂU NÚT ===== */
+      .btn {
+        padding: 12px 25px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
 
-        th {
-            background-color: #f4f4f4;
-        }
+      .btn:hover {
+        transform: translateY(-2px);
+      }
 
-        tr:hover {
-            background-color: #f1f1f1;
-        }
+      .btn-primary {
+        background-color: #0d6efd;
+        color: white;
+      }
 
-        .btn {
-            padding: 10px 16px;
-            font-size: 14px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            transition: 0.3s ease;
-        }
+      .btn-primary:hover {
+        background-color: #0b5ed7;
+      }
 
-        .btn:hover {
-            opacity: 0.9;
-        }
+      .btn-danger {
+        background-color: #dc3545;
+        color: white;
+      }
 
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
+      .btn-danger:hover {
+        background-color: #c82333;
+      }
 
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: white;
-        }
+      .button-group {
+        text-align: center;
+        margin-bottom: 30px;
+      }
 
-        .button-group {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+      /* ===== KIỂU FORM THÊM SẢN PHẨM ===== */
+      #add-product-form {
+        display: none;
+        background-color: white;
+        padding: 30px;
+        max-width: 800px;
+        margin: 0 auto 30px auto;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
 
+      .form-title {
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 1.5rem;
+        color: #2c3e50;
+        font-weight: 600;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #495057;
+        font-weight: 500;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+      }
+
+      .form-group input[type="file"] {
+        padding: 8px;
+        border: 2px dashed #e9ecef;
+        background-color: #f8f9fa;
+        cursor: pointer;
+      }
+
+      .form-group input[disabled] {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+      }
+
+      .form-group select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        background-size: 15px;
+        padding-right: 45px;
+      }
+
+      .description-container {
+        margin-top: 20px;
+      }
+
+      .description-pair {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 10px;
+      }
+
+      .description-pair input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .description-pair span {
+        color: #495057;
+        font-weight: 500;
+      }
+
+      .form-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+      }
+
+      /* ===== KIỂU BẢNG DANH SÁCH SẢN PHẨM ===== */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 30px;
+        background-color: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      td img {
+        width: 80px;
+        height: auto;
+        border-radius: 4px;
+      }
+
+      tr:hover {
+        background-color: #f8f9fa;
+      }
+
+      /* ===== KIỂU MÔ TẢ SẢN PHẨM ===== */
+      .description-pair {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .description-pair input {
+        flex: 1;
+      }
+
+      .description-pair span {
+        font-weight: 600;
+        color: #495057;
+      }
+
+      /* ===== KIỂU DATALIST ===== */
+      datalist {
+        display: none;
+      }
+
+      /* ===== THIẾT KẾ ĐÁP ỨNG ===== */
+      @media (max-width: 768px) {
         #add-product-form {
-            display: none;
-            background-color: var(--light-bg);
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto 30px auto;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
+          padding: 20px;
         }
 
-        #add-product-form table {
-            width: 100%;
+        .description-pair {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 8px;
         }
 
-        #add-product-form td {
-            padding: 10px 5px;
+        .description-pair span {
+          text-align: center;
         }
-
-        #add-product-form input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .form-title {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .category-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .hidden {
-            display: none;
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <h1>Danh sách sản phẩm</h1>
+  <body>
+    <h1>Thêm sản phẩm</h1>
 
     <div class="button-group">
-        <button class="btn btn-primary" id="add-product-btn">Thêm sản phẩm</button>
-        <button class="btn btn-primary" id="add-many-product-btn">Import CSV/JSON</button>
-        <input type="file" id="file-upload" accept=".json,.csv" style="display:none">
+      <button class="btn btn-primary" id="add-product-btn">Thêm sản phẩm</button>
+      <button class="btn btn-primary" id="add-many-product-btn">Import CSV/JSON</button>
+      <input type="file" id="file-upload" accept=".json,.csv" style="display: none" />
     </div>
 
     <div id="add-product-form">
-        <div class="form-title">Thêm sản phẩm mới</div>
-        <div class="category-options" id="category-options"></div>
-        <table>
-            <tr>
-                <td><label for="category-select">Loại hàng:</label></td>
-                <td>
-                    <select id="category-select">
-                        <option value="" disabled selected>-- Chọn loại hàng --</option>
-                        <option value="CPU">CPU</option>
-                        <option value="RAM">RAM</option>
-                        <option value="Ổ cứng">Ổ cứng</option>
-                        <option value="GPU">GPU</option>
-                        <option value="Mainboard">Mainboard</option>
-                        <option value="PSU">PSU</option>
-                        <option value="Case">Case</option>
-                        <option value="Tản nhiệt">Tản nhiệt</option>
-                        <option value="bàn phím">bàn phím</option>
-                        <option value="chuột">chuột</option>
-                        <option value="màn hình">màn hình</option>
-                        <option value="card âm thanh">card âm thanh</option>
-                        <option value="Thiết bị mạng">Thiết bị mạng</option>
-                        <option value="Khác">Khác</option>
-                    </select>
-                </td>
-            </tr>
-            <tr class="hidden" id="custom-category-row">
-                <td><label for="custom-category">Loại hàng:</label></td>
-                <td><input type="text" id="custom-category"></td>
-            </tr>
-            <tr class="hidden" id="custom-prefix-row">
-                <td><label for="custom-prefix">Mã hàng:</label></td>
-                <td><input type="text" id="custom-prefix"></td>
-            </tr>
-            <tr>
-                <td><label for="image">Hình ảnh:</label></td>
-                <td><input type="file" id="image-upload" accept="image/* ">
-                    <input type="hidden" id="image">
-                </td>
+      <div class="form-title">Thêm sản phẩm mới</div>
 
-            </tr>
-            
-            <tr>
-                <td><label for="id">ID:</label></td>
-                <td><input type="text" id="id" disabled></td>
-            </tr>
-            <tr>
-                <td><label for="name">Tên:</label></td>
-                <td><input type="text" id="name" placeholder="Tên sản phẩm" required></td>
-            </tr>
-            <tr>
-                <td><label for="price">Giá:</label></td>
-                <td><input type="number" id="price" placeholder="Giá" required></td>
-            </tr>
-            <tr>
-                <td><label for="brand">Thương hiệu:</label></td>
-                <td><input type="text" id="brand" placeholder="Thương hiệu" list="brand-list" required></td>
-            </tr>
-            <tr>
-                <td><label for="warranty">Bảo hành:</label></td>
-                <td><input type="text" id="warranty" placeholder="Bảo hành" list="warranty-list" required></td>
-            </tr>
-            <tr>
-                <td><label>Mô tả:</label></td>
-                <td id="discription-container">
-                    <div class="discription-pair">
-                        <input type="text" placeholder="Nhập Key" class="discription-key">
-                        <span>:</span>
-                        <input type="text" placeholder="Nhập Value" class="discription-value">
-                    </div>
-                </td>
-            </tr>
-        </table>
-        <div style="text-align:center; margin-top: 15px;">
-            <button class="btn btn-primary" id="save-btn">Lưu</button>
-            <button class="btn btn-danger" id="cancel-btn">Hủy</button>
+      <div class="form-group">
+        <label for="category-select">Loại hàng:</label>
+        <select id="category-select" required>
+          <option value="" disabled selected>-- Chọn loại hàng --</option>
+          <option value="CPUX">CPU</option>
+          <option value="RAMX">RAM</option>
+          <option value="SSDX">Ổ cứng</option>
+          <option value="GPUX">GPU</option>
+          <option value="Main">Mainboard</option>
+          <option value="PSUX">PSU</option>
+          <option value="Case">Case</option>
+          <option value="Cooler">Tản nhiệt</option>
+          <option value="Keyboard">Bàn phím</option>
+          <option value="Mouse">Chuột</option>
+          <option value="Monitor">Màn hình</option>
+          <option value="Sound">Card âm thanh</option>
+          <option value="Network">Thiết bị mạng</option>
+          <option value="Khác">Khác</option>
+        </select>
+      </div>
+
+      <div class="form-group hidden" id="custom-category-row">
+        <label for="custom-category">Loại hàng tùy chỉnh:</label>
+        <input type="text" id="custom-category" />
+      </div>
+
+      <div class="form-group hidden" id="custom-prefix-row">
+        <label for="custom-prefix">Mã hàng tùy chỉnh:</label>
+        <input type="text" id="custom-prefix" />
+      </div>
+
+      <div class="form-group">
+        <label for="image-upload">Hình ảnh:</label>
+        <input type="file" id="image-upload" accept="image/*" />
+        <input type="hidden" id="image" />
+      </div>
+
+      <div class="form-group">
+        <label for="id">ID:</label>
+        <input type="text" id="id" disabled />
+      </div>
+
+      <div class="form-group">
+        <label for="name">Tên:</label>
+        <input type="text" id="name" placeholder="Tên sản phẩm" required />
+      </div>
+
+      <div class="form-group">
+        <label for="price">Giá:</label>
+        <input type="number" id="price" placeholder="Giá" required />
+      </div>
+
+      <div class="form-group">
+        <label for="brand">Thương hiệu:</label>
+        <input type="text" id="brand" placeholder="Thương hiệu" list="brand-list" required />
+      </div>
+
+      <div class="form-group">
+        <label for="warranty">Bảo hành:</label>
+        <input type="text" id="warranty" placeholder="Bảo hành" list="warranty-list" required />
+      </div>
+
+      <div class="form-group">
+        <label>Mô tả:</label>
+        <div id="discription-container">
+          <div class="description-pair">
+            <input type="text" placeholder="Nhập Key" class="discription-key" />
+            <span>:</span>
+            <input type="text" placeholder="Nhập Value" class="discription-value" />
+          </div>
         </div>
+      </div>
+
+      <div class="form-buttons">
+        <button class="btn btn-primary" id="save-btn">Lưu</button>
+        <button class="btn btn-danger" id="cancel-btn">Hủy</button>
+      </div>
     </div>
 
     <table>
-        <thead>
-            <tr>
-                <th>Hình ảnh</th>
-                <th>ID</th>
-                <th>Tên sản phẩm</th>
-                <th>Giá</th>
-                <th>Thương hiệu</th>
-                <th>Bảo hành</th>
-            </tr>
-        </thead>
-        <tbody id="product-list"></tbody>
+      <thead>
+        <tr>
+          <th>Hình ảnh</th>
+          <th>ID</th>
+          <th>Tên sản phẩm</th>
+          <th>Giá</th>
+          <th>Thương hiệu</th>
+          <th>Bảo hành</th>
+        </tr>
+      </thead>
+      <tbody id="product-list"></tbody>
     </table>
 
     <datalist id="brand-list">
-        <option value="ASUS">
-        <option value="MSI">
-        <option value="GIGABYTE">
-        <option value="Corsair">
-        <option value="Logitech">
+      <option value="ASUS"></option>
+      <option value="MSI"></option>
+      <option value="GIGABYTE"></option>
+      <option value="Corsair"></option>
+      <option value="Logitech"></option>
+      <option value="Intel"></option>
+      <option value="AMD"></option>
+      <option value="NVIDIA"></option>
+      <option value="Samsung"></option>
+      <option value="Western Digital"></option>
+      <option value="Seagate"></option>
+      <option value="Crucial"></option>
+      <option value="Kingston"></option>
+      <option value="HyperX"></option>
+      <option value="Razer"></option>
+      <option value="SteelSeries"></option>
     </datalist>
+
     <datalist id="warranty-list">
-        <option value="12 tháng">
-        <option value="24 tháng">
-        <option value="36 tháng">
+      <option value="1 years"></option>
+      <option value="2 years"></option>
+      <option value="3 years"></option>
+      <option value="5 years"></option>
+      <option value="10 years"></option>
+      <option value="24 years"></option>
+      <option value="36 years"></option>
+      <option value="48 years"></option>
+      <option value="60 years"></option>
     </datalist>
 
     <script>
-     function setupDiscriptionPairInput() {
-    const container = document.getElementById('discription-container');
-    container.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && (e.target.classList.contains('discription-key') || e.target.classList.contains('discription-value'))) {
+      function setupDiscriptionPairInput() {
+        const container = document.getElementById("discription-container");
+        container.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" && (e.target.classList.contains("discription-key") || e.target.classList.contains("discription-value"))) {
             e.preventDefault();
-            const div = document.createElement('div');
-            div.className = 'discription-pair';
+            const div = document.createElement("div");
+            div.className = "description-pair";
             div.innerHTML = `
-                <input type="text" placeholder="Nhập Key" class="discription-key">
-                <span>:</span>
-                <input type="text" placeholder="Nhập Value" class="discription-value">
-            `;
+                    <input type="text" placeholder="Nhập Key" class="discription-key">
+                    <span>:</span>
+                    <input type="text" placeholder="Nhập Value" class="discription-value">
+                `;
             container.appendChild(div);
-            div.querySelector('.discription-key').focus();
-        }
-    });
-}
-setupDiscriptionPairInput();
-
-const categorySelect = document.getElementById('category-select');
-categorySelect.addEventListener('change', (e) => {
-    const selected = e.target.value;
-    const idField = document.getElementById('id');
-
-    if (selected === 'Khác') {
-        document.getElementById('custom-category-row').classList.remove('hidden');
-        document.getElementById('custom-prefix-row').classList.remove('hidden');
-        idField.value = '';
-    } else {
-        document.getElementById('custom-category-row').classList.add('hidden');
-        document.getElementById('custom-prefix-row').classList.add('hidden');
-        const prefix = selected.normalize("NFD").replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase() + 'X';
-        idField.value = generateNextId(prefix);
-    }
-});
-
-let allProducts = [];
-
-fetch('/api/sanpham')
-    .then(res => res.json())
-    .then(data => {
-        allProducts = data;
-        const productList = document.getElementById('product-list');
-        data.forEach(sp => {
-            const row = document.createElement('tr');
-            const imageUrl = sp.image?.trim() || 'images/i9 -14900k.png';
-            row.innerHTML = `
-                <td><img src="${imageUrl}" style="width: 80px; height: auto;"></td>
-                <td>${sp.id}</td>
-                <td>${sp.name}</td>
-                <td>${parseFloat(sp.price).toLocaleString()} VND</td>
-                <td>${sp.brand}</td>
-                <td>${sp.warranty}</td>
-            `;
-            productList.appendChild(row);
+            div.querySelector(".discription-key").focus();
+          }
         });
-    });
+      }
+      setupDiscriptionPairInput();
 
-function generateNextId(prefix) {
-    const matching = allProducts.filter(p => p.id.startsWith(prefix));
-    let maxNum = 0;
-    matching.forEach(p => {
-        const num = parseInt(p.id.slice(prefix.length));
-        if (!isNaN(num)) maxNum = Math.max(maxNum, num);
-    });
-    return prefix + (maxNum + 1).toString().padStart(4, '0');
-}
+      const categorySelect = document.getElementById("category-select");
+      const customCategoryRow = document.getElementById("custom-category-row");
+      const customPrefixRow = document.getElementById("custom-prefix-row");
+      const idField = document.getElementById("id");
 
-document.getElementById('add-product-btn').addEventListener('click', () => {
-    document.getElementById('add-product-form').style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+      categorySelect.addEventListener("change", (e) => {
+        const selected = e.target.value;
 
-document.getElementById('image-upload').addEventListener('change', function() {
-    const file = this.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-        document.getElementById('image').value = e.target.result;
-    };
-    reader.readAsDataURL(file);
-});
+        // Hiển thị/ẩn các trường tùy chỉnh
+        if (selected === "Khác") {
+          customCategoryRow.classList.remove("hidden");
+          customPrefixRow.classList.remove("hidden");
+          idField.value = "";
+        } else {
+          customCategoryRow.classList.add("hidden");
+          customPrefixRow.classList.add("hidden");
+          const prefix = selected
+            .normalize("NFD")
+            .replace(/[^a-zA-Z]/g, "")
+            .substring(0, 4)
+            .toUpperCase();
+          idField.value = generateNextId(prefix);
+        }
+      });
 
-document.getElementById('cancel-btn').addEventListener('click', () => {
-    document.getElementById('add-product-form').style.display = 'none';
-});
+      let allProducts = [];
 
-document.getElementById('save-btn').addEventListener('click', () => {
-    const id = document.getElementById('id').value.trim();
-    const name = document.getElementById('name').value.trim();
-    const price = document.getElementById('price').value.trim();
-    const brand = document.getElementById('brand').value.trim();
-    let warranty = document.getElementById('warranty').value.trim();
-    const image = document.getElementById('image').value.trim();
+      fetch("/api/sanpham")
+        .then((res) => res.json())
+        .then((data) => {
+          allProducts = data;
+          const productList = document.getElementById("product-list");
+          data.forEach((sp) => {
+            const row = document.createElement("tr");
+            const imageUrl = sp.image?.trim() || "images/i9 -14900k.png";
+            row.innerHTML = `
+                    <td><img src="${imageUrl}" style="width: 80px; height: auto;"></td>
+                    <td>${sp.id}</td>
+                    <td>${sp.name}</td>
+                    <td>${parseFloat(sp.price).toLocaleString()} VND</td>
+                    <td>${sp.brand}</td>
+                    <td>${sp.warranty}</td>
+                `;
+            productList.appendChild(row);
+          });
+        });
 
-    const descriptionElements = document.querySelectorAll('#discription-container .discription-pair');
+      function generateNextId(prefix) {
+        const matching = allProducts.filter((p) => p.id.startsWith(prefix));
+        let maxNum = 0;
+        matching.forEach((p) => {
+          const num = parseInt(p.id.slice(prefix.length));
+          if (!isNaN(num)) maxNum = Math.max(maxNum, num);
+        });
+        return prefix + (maxNum + 1).toString().padStart(4, "0");
+      }
+
+      document.getElementById("add-product-btn").addEventListener("click", () => {
+        document.getElementById("add-product-form").style.display = "block";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      document.getElementById("image-upload").addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById("image").value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      document.getElementById("cancel-btn").addEventListener("click", () => {
+        document.getElementById("add-product-form").style.display = "none";
+        // Reset form
+        customCategoryRow.classList.add("hidden");
+        customPrefixRow.classList.add("hidden");
+        categorySelect.selectedIndex = 0;
+        idField.value = "";
+      });
+
+      document.getElementById("save-btn").addEventListener("click", () => {
+        const id = document.getElementById("id").value.trim();
+        const name = document.getElementById("name").value.trim();
+        const price = document.getElementById("price").value.trim();
+        const brand = document.getElementById("brand").value.trim();
+        let warranty = document.getElementById("warranty").value.trim();
+        const image = document.getElementById("image").value.trim();
+
+        const descriptionElements = document.querySelectorAll("#discription-container .description-pair");
         const newProduct = { id, name, price: parseFloat(price), brand, warranty, image };
 
-        descriptionElements.forEach(pair => {
-            const key = pair.querySelector('.discription-key').value.trim();
-            const value = pair.querySelector('.discription-value').value.trim();
-            if (key) {
-                newProduct[key] = value;
-            }
+        descriptionElements.forEach((pair) => {
+          const key = pair.querySelector(".discription-key").value.trim();
+          const value = pair.querySelector(".discription-value").value.trim();
+          if (key) {
+            newProduct[key] = value;
+          }
         });
 
-    if (/^\d+$/.test(warranty)) {
-        warranty = `${warranty} năm`;
-    }
+        if (/^\d+$/.test(warranty)) {
+          warranty = `${warranty} năm`;
+        }
 
-  
-    fetch('/api/sanpham', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newProduct)
-    })
-    .then(res => res.json())
-    .then(addedProduct => {
-        const row = document.createElement('tr');
-        const imageUrl = addedProduct.image?.trim() || 'images/i9 -14900k.png';
-        row.innerHTML = `
-            <td><img src="${imageUrl}" style="width: 80px; height: auto;"></td>
-            <td>${addedProduct.id}</td>
-            <td>${addedProduct.name}</td>
-            <td>${parseFloat(addedProduct.price).toLocaleString()} VND</td>
-            <td>${addedProduct.brand}</td>
-            <td>${addedProduct.warranty}</td>
-        `;
-        document.getElementById('product-list').appendChild(row);
-        document.getElementById('add-product-form').style.display = 'none';
-        document.getElementById('name').value = '';
-        document.getElementById('price').value = '';
-        document.getElementById('brand').value = '';
-        document.getElementById('warranty').value = '';
-        document.getElementById('image').value = '';
-        document.getElementById('id').value = '';
-        document.getElementById('discription-container').innerHTML = `
-            <div class="discription-pair">
-                <input type="text" placeholder="Nhập Key" class="discription-key">
-                <span>:</span>
-                <input type="text" placeholder="Nhập Value" class="discription-value">
-            </div>`;
-            alert('Thêm sản phẩm thành công!');
-    })
-    .catch(() => alert('Không thể thêm sản phẩm. Vui lòng thử lại!'));
-});
+        fetch("/api/sanpham", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newProduct),
+        })
+          .then((res) => res.json())
+          .then((addedProduct) => {
+            const row = document.createElement("tr");
+            const imageUrl = addedProduct.image?.trim() || "images/i9 -14900k.png";
+            row.innerHTML = `
+                <td><img src="${imageUrl}" style="width: 80px; height: auto;"></td>
+                <td>${addedProduct.id}</td>
+                <td>${addedProduct.name}</td>
+                <td>${parseFloat(addedProduct.price).toLocaleString()} VND</td>
+                <td>${addedProduct.brand}</td>
+                <td>${addedProduct.warranty}</td>
+            `;
+            document.getElementById("product-list").appendChild(row);
+            document.getElementById("add-product-form").style.display = "none";
 
-document.getElementById('add-many-product-btn').addEventListener('click', () => {
-    document.getElementById('file-upload').click();
-});
+            // Reset form
+            document.getElementById("name").value = "";
+            document.getElementById("price").value = "";
+            document.getElementById("brand").value = "";
+            document.getElementById("warranty").value = "";
+            document.getElementById("image").value = "";
+            document.getElementById("id").value = "";
+            customCategoryRow.classList.add("hidden");
+            customPrefixRow.classList.add("hidden");
+            categorySelect.selectedIndex = 0;
+            document.getElementById("discription-container").innerHTML = `
+                <div class="description-pair">
+                    <input type="text" placeholder="Nhập Key" class="discription-key">
+                    <span>:</span>
+                    <input type="text" placeholder="Nhập Value" class="discription-value">
+                </div>`;
+            alert("Thêm sản phẩm thành công!");
+          })
+          .catch(() => alert("Không thể thêm sản phẩm. Vui lòng thử lại!"));
+      });
 
-document.getElementById('file-upload').addEventListener('change', function () {
-    const file = this.files[0];
-    if (!file) return;
+      document.getElementById("add-many-product-btn").addEventListener("click", () => {
+        document.getElementById("file-upload").click();
+      });
 
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        try {
+      document.getElementById("file-upload").addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          try {
             const content = e.target.result;
             let products = [];
 
-            if (file.name.endsWith('.json')) {
-                const json = JSON.parse(content);
+            if (file.name.endsWith(".json")) {
+              const json = JSON.parse(content);
 
-                // Hỗ trợ cả file mảng và bán cấu trúc
-                if (Array.isArray(json)) {
-                    products = json;
-                } else {
-                    const arrayLikeKey = Object.keys(json).find(k => Array.isArray(json[k]));
-                    products = arrayLikeKey ? json[arrayLikeKey] : [json];
-                }
+              // Hỗ trợ cả file mảng và bán cấu trúc
+              if (Array.isArray(json)) {
+                products = json;
+              } else {
+                const arrayLikeKey = Object.keys(json).find((k) => Array.isArray(json[k]));
+                products = arrayLikeKey ? json[arrayLikeKey] : [json];
+              }
             }
 
-            if (!Array.isArray(products)) throw new Error('Dữ liệu không hợp lệ');
+            if (!Array.isArray(products)) throw new Error("Dữ liệu không hợp lệ");
             if (!confirm(`Đã tải ${products.length} sản phẩm. Bạn có muốn thêm không?`)) return;
 
             products.forEach((p, i) => {
-                try {
-                    const prefix = p.id?.match(/^[A-Z]+X/)?.[0] || (p.category?.normalize("NFD").replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase() + 'X') || 'PRDX';
-                    const id = p.id || generateNextId(prefix);
+              try {
+                const prefix =
+                  p.id?.match(/^[A-Z]+X/)?.[0] ||
+                  p.category
+                    ?.normalize("NFD")
+                    .replace(/[^a-zA-Z]/g, "")
+                    .substring(0, 4)
+                    .toUpperCase() ||
+                  "PRDX";
+                const id = p.id || generateNextId(prefix);
 
-                    const product = {
-                        id,
-                        name: p.name || `Sản phẩm ${i + 1}`,
-                        price: parseFloat(p.price) || 0,
-                        brand: p.brand || 'Không rõ',
-                        warranty: p.warranty || 'Không rõ',
-                        image: p.image || 'images/i9 -14900k.png'
-                    };
+                const product = {
+                  id,
+                  name: p.name || `Sản phẩm ${i + 1}`,
+                  price: parseFloat(p.price) || 0,
+                  brand: p.brand || "Không rõ",
+                  warranty: p.warranty || "Không rõ",
+                  image: p.image || "images/i9 -14900k.png",
+                };
 
-                    fetch('/api/sanpham', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(product)
-                    })
-                    .then(res => res.json())
-                    .then(added => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td><img src="${added.image}" style="width: 80px; height: auto;"></td>
-                            <td>${added.id}</td>
-                            <td>${added.name}</td>
-                            <td>${parseFloat(added.price).toLocaleString()} VND</td>
-                            <td>${added.brand}</td>
-                            <td>${added.warranty}</td>
-                        `;
-                        document.getElementById('product-list').appendChild(row);
-                    });
-                } catch (err) {
-                    console.warn(`Lỗi khi xử lý sản phẩm số ${i + 1}: ${err.message}`);
-                }
+                fetch("/api/sanpham", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(product),
+                })
+                  .then((res) => res.json())
+                  .then((added) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                                <td><img src="${added.image}" style="width: 80px; height: auto;"></td>
+                                <td>${added.id}</td>
+                                <td>${added.name}</td>
+                                <td>${parseFloat(added.price).toLocaleString()} VND</td>
+                                <td>${added.brand}</td>
+                                <td>${added.warranty}</td>
+                            `;
+                    document.getElementById("product-list").appendChild(row);
+                  });
+              } catch (err) {
+                console.warn(`Lỗi khi xử lý sản phẩm số ${i + 1}: ${err.message}`);
+              }
             });
-
-        } catch (err) {
-            alert('Không thể đọc file: ' + err.message);
-        }
-    };
-    reader.readAsText(file);
-});
-
+          } catch (err) {
+            alert("Không thể đọc file: " + err.message);
+          }
+        };
+        reader.readAsText(file);
+      });
     </script>
-</body>
-
+  </body>
 </html>
