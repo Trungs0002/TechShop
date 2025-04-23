@@ -1,542 +1,640 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Xóa sản phẩm</title>
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f8f9fa;
-      margin: 0;
-      padding: 0;
-    }
-
-    nav#mainMenu {
-      background-color: #0d6efd;
-      padding: 12px 0;
-    }
-
-    nav#mainMenu ul {
-      list-style: none;
-      display: flex;
-      justify-content: center;
-      margin: 0;
-      padding: 0;
-      gap: 20px;
-    }
-
-    nav#mainMenu ul li a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 10px 15px;
-      border-radius: 6px;
-      transition: background 0.3s;
-    }
-
-    nav#mainMenu ul li a:hover {
-      background-color: #084298;
-    }
-
-    h1 {
-      text-align: center;
-      margin: 30px 0 10px;
-      font-size: 32px;
-      color: #343a40;
-    }
-
-    /* Tìm kiếm */
-    #searchForm {
-      display: flex;
-      justify-content: flex-start;
-      gap: 12px;
-      margin-bottom: 30px;
-      padding-left: 40px;
-    }
-
-    #searchInput {
-      width: 300px;
-      padding: 12px;
-      font-size: 15px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    #searchButton {
-      padding: 12px 20px;
-      font-size: 15px;
-      background-color: #0d6efd;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    #searchButton:hover {
-      background-color: #084298;
-    }
-
-    /* Bộ lọc */
-    #filterContainer {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 20px;
-      padding-left: 40px;
-      margin-bottom: 20px;
-    }
-
-    #filterContainer h3 {
-      margin-bottom: 5px;
-      color: #495057;
-    }
-
-    #filterContainer div {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    #filterContainer button {
-      padding: 10px 15px;
-      font-size: 14px;
-      border: 1px solid #ced4da;
-      border-radius: 6px;
-      background-color: #ffffff;
-      cursor: pointer;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    #filterContainer button.active,
-    #filterContainer button:hover {
-      background-color: #0d6efd;
-      color: white;
-      border-color: #0d6efd;
-    }
-
-    #productContainer {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 20px 40px;
-    }
-
-    .product-card {
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      padding: 16px;
-      transition: transform 0.3s, box-shadow 0.3s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .product-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-    }
-
-    .product-card img {
-      max-width: 100%;
-      max-height: 140px;
-      object-fit: contain;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-
-    .product-card h3 {
-      font-size: 16px;
-      font-weight: 600;
-      color: #212529;
-      margin: 10px 0 5px;
-      text-align: center;
-      min-height: 40px;
-    }
-
-    .product-card p.price {
-      color: #198754;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .product-card p {
-      font-size: 14px;
-      color: #6c757d;
-      margin: 2px 0;
-    }
-
-    .product-card button {
-      margin-top: auto;
-      padding: 10px 15px;
-      background-color: #f44336;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .product-card button:hover {
-      background-color: #e53935;
-    }
-
-    #pagination-controls {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 30px 0;
-    }
-
-    #pagination-controls button {
-      padding: 10px 20px;
-      background-color: #dee2e6;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    #pagination-controls button:hover {
-      background-color: #adb5bd;
-    }
-
-    /* Modal xác nhận */
-    #confirmModal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-    }
-
-    #confirmModal .modal-content {
-      background: #fff;
-      padding: 20px;
-      max-width: 400px;
-      margin: 100px auto;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      animation: fadeIn 0.3s ease-in-out;
-    }
-
-    #confirmModal .modal-content p {
-      font-size: 16px;
-      color: #343a40;
-      margin-bottom: 20px;
-    }
-
-    #confirmModal .modal-content button {
-      padding: 10px 20px;
-      font-size: 14px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    #confirmModal .modal-content button#confirmYes {
-      background-color: #f44336;
-      color: white;
-      margin-right: 10px;
-    }
-
-    #confirmModal .modal-content button#confirmYes:hover {
-      background-color: #e53935;
-    }
-
-    #confirmModal .modal-content button#confirmNo {
-      background-color: #6c757d;
-      color: white;
-    }
-
-    #confirmModal .modal-content button#confirmNo:hover {
-      background-color: #5a6268;
-    }
-
-    /* Hiệu ứng fade-in */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.9);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xóa sản phẩm</title>
+    <style>
+      /* Reset và Base styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-      to {
-        opacity: 1;
-        transform: scale(1);
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 20px;
+        color: #333;
       }
-    }
 
-    #toast {
-      visibility: hidden;
-      min-width: 250px;
-      margin-left: -125px;
-      background-color: #4caf50;
-      color: white;
-      text-align: center;
-      border-radius: 4px;
-      padding: 16px;
-      position: fixed;
-      z-index: 1000;
-      left: 50%;
-      bottom: 30px;
-      font-size: 17px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      transition: visibility 0s, opacity 0.5s ease-in-out;
-    }
+      /* Tiêu đề */
+      h1 {
+        text-align: center;
+        margin: 30px 0;
+        color: #2c3e50;
+        font-size: 2.5rem;
+        font-weight: 600;
+      }
 
-    #toast.show {
-      visibility: visible;
-      opacity: 1;
-    }
+      /* Form tìm kiếm */
+      #searchForm {
+        max-width: 1400px;
+        margin: 0 auto 30px;
+        display: flex;
+        gap: 15px;
+        padding: 0 20px;
+      }
 
-    #toast.hide {
-      opacity: 0;
-    }
-  </style>
-</head>
+      #searchInput {
+        flex: 1;
+        padding: 12px 20px;
+        font-size: 16px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
 
-<body>
-  <h1>Danh sách sản phẩm</h1>
+      #searchInput:focus {
+        outline: none;
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+      }
 
-  <div id="searchForm">
-    <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm...">
-    <button id="searchButton">Tìm kiếm</button>
-  </div>
+      #searchButton {
+        padding: 12px 30px;
+        font-size: 16px;
+        background-color: #0d6efd;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
 
-  <div id="filterContainer">
-    <h3>Giá</h3>
-    <div id="priceFilters">
-      <button data-min="0" data-max="2000000">Dưới 2 triệu</button>
-      <button data-min="4000000" data-max="7000000">Từ 4-7 triệu</button>
-      <button data-min="20000000" data-max="">Trên 20 triệu</button>
-    </div>
+      #searchButton:hover {
+        background-color: #0b5ed7;
+        transform: translateY(-1px);
+      }
 
-    <h3>Loại</h3>
-    <div id="categoryFilters">
-      <button data-category="CPUX">CPU</button>
-      <button data-category="RAMX">RAM</button>
-      <button data-category="SSDX">Ổ cứng/SSD</button>
-      <button data-category="GPUX">Card đồ họa (GPU)</button>
-      <button data-category="MAIN">Bo mạch chủ (Mainboard)</button>
-      <button data-category="PSUX">Nguồn (PSU)</button>
-      <button data-category="CASE">Vỏ case</button>
-      <button data-category="COOL">Tản nhiệt</button>
-      <button data-category="KEYB">Bàn phím</button>
-      <button data-category="MOUS">Chuột</button>
-      <button data-category="MONI">Màn hình</button>
-      <button data-category="SOUN">Card âm thanh</button>
-      <button data-category="NETW">Thiết bị mạng</button>
-    </div>
-  </div>
+      /* Bộ lọc */
+      #filterContainer {
+        max-width: 1400px;
+        margin: 0 auto 40px;
+        padding: 20px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
 
-  <div id="productContainer"></div>
+      #filterContainer h3 {
+        color: #2c3e50;
+        margin: 0 0 15px;
+        font-size: 1.2rem;
+      }
 
-  <div id="pagination-controls">
-    <button id="prevPage">Trang trước</button>
-    <span id="pagination"></span>
-    <button id="nextPage">Trang sau</button>
-  </div>
+      #filterContainer div {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
 
-  <!-- Modal xác nhận -->
-  <div id="confirmModal">
-    <div class="modal-content">
-      <p id="confirmMessage">Bạn có chắc muốn xóa sản phẩm này?</p>
-      <button id="confirmYes">Có</button>
-      <button id="confirmNo">Không</button>
-    </div>
-  </div>
+      #filterContainer button {
+        padding: 10px 20px;
+        font-size: 14px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        background-color: white;
+        color: #495057;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
 
-  <div id="toast"></div>
+      #filterContainer button:hover {
+        background-color: #f8f9fa;
+        border-color: #0d6efd;
+        color: #0d6efd;
+      }
 
-  <script>
-    let currentPage = 1;
-    const limit = 10;
-    let totalPages = 1;
+      #filterContainer button.active {
+        background-color: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+      }
 
-    let currentFilters = {
-      searchQuery: "",
-      minPrice: "",
-      maxPrice: "",
-      category: ""
-    };
+      /* Container sản phẩm */
+      #productContainer {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 20px;
+      }
 
-    // Áp dụng bộ lọc
-    function applyFilters() {
-      const params = new URLSearchParams();
+      /* Card sản phẩm */
+      .product-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      }
 
-      if (currentFilters.minPrice) params.append("minPrice", currentFilters.minPrice);
-      if (currentFilters.maxPrice) params.append("maxPrice", currentFilters.maxPrice);
-      if (currentFilters.category) params.append("category", currentFilters.category);
-      if (currentFilters.searchQuery) params.append("searchQuery", currentFilters.searchQuery);
+      .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+      }
 
-      params.append("page", currentPage);
-      params.append("limit", limit);
+      .product-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: contain;
+        border-radius: 8px;
+        margin-bottom: 12px;
+      }
 
-      fetchProducts(currentPage, params.toString());
-    }
+      .product-card h3 {
+        font-size: 1rem;
+        color: #2c3e50;
+        margin-bottom: 8px;
+        line-height: 1.4;
+      }
 
-    // Tìm kiếm sản phẩm
-    document.getElementById('searchButton').addEventListener('click', () => {
-      const searchQuery = document.getElementById('searchInput').value.trim();
-      currentFilters.searchQuery = searchQuery; // Thêm thuộc tính tìm kiếm
-      currentPage = 1; // Reset trang về 1
-      applyFilters();
-    });
+      .product-card p {
+        margin: 4px 0;
+        color: #6c757d;
+        font-size: 0.9rem;
+      }
 
-    // Lọc theo giá
-    document.querySelectorAll("#priceFilters button").forEach(button => {
-      button.addEventListener("click", () => {
-        const isActive = button.classList.contains("active");
+      .product-card .price {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #0d6efd;
+        margin: 8px 0;
+      }
 
-        // Bỏ trạng thái active khỏi tất cả các nút
-        document.querySelectorAll("#priceFilters button").forEach(btn => btn.classList.remove("active"));
+      .product-card button {
+        margin-top: auto;
+        padding: 10px 20px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+      }
 
-        if (!isActive) {
-          // Nếu nút chưa active, áp dụng bộ lọc
-          button.classList.add("active");
-          currentFilters.minPrice = button.getAttribute("data-min");
-          currentFilters.maxPrice = button.getAttribute("data-max");
-        } else {
-          // Nếu nút đang active, bỏ lọc
-          currentFilters.minPrice = "";
-          currentFilters.maxPrice = "";
+      .product-card button:hover {
+        background-color: #c82333;
+        transform: translateY(-2px);
+      }
+
+      /* Phân trang */
+      #pagination-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        margin: 40px 0;
+      }
+
+      #pagination-controls button {
+        padding: 12px 25px;
+        font-size: 16px;
+        background-color: #0d6efd;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      #pagination-controls button:hover {
+        background-color: #0b5ed7;
+        transform: translateY(-2px);
+      }
+
+      #pagination-controls button:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      #pagination {
+        font-size: 1.1rem;
+        color: #495057;
+        font-weight: 500;
+      }
+
+      /* Modal xác nhận */
+      #confirmModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #confirmModal .modal-content {
+        background-color: white;
+        padding: 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      #confirmModal .modal-content p {
+        font-size: 1.1rem;
+        color: #2c3e50;
+        margin-bottom: 25px;
+      }
+
+      #confirmModal .modal-content button {
+        padding: 12px 25px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 0 10px;
+      }
+
+      #confirmModal .modal-content button#confirmYes {
+        background-color: #dc3545;
+        color: white;
+      }
+
+      #confirmModal .modal-content button#confirmYes:hover {
+        background-color: #c82333;
+        transform: translateY(-2px);
+      }
+
+      #confirmModal .modal-content button#confirmNo {
+        background-color: #6c757d;
+        color: white;
+      }
+
+      #confirmModal .modal-content button#confirmNo:hover {
+        background-color: #5a6268;
+        transform: translateY(-2px);
+      }
+
+      /* Toast Notification */
+      #toast {
+        visibility: hidden;
+        min-width: 300px;
+        background-color: #28a745;
+        color: white;
+        text-align: center;
+        border-radius: 8px;
+        padding: 16px 25px;
+        position: fixed;
+        z-index: 1001;
+        left: 50%;
+        bottom: 30px;
+        transform: translateX(-50%);
+        font-size: 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      #toast.show {
+        visibility: visible;
+        animation: fadeIn 0.5s, fadeOut 0.5s 2.5s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          bottom: 0;
+          opacity: 0;
+        }
+        to {
+          bottom: 30px;
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeOut {
+        from {
+          bottom: 30px;
+          opacity: 1;
+        }
+        to {
+          bottom: 0;
+          opacity: 0;
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 1400px) {
+        #productContainer,
+        #searchForm,
+        #filterContainer {
+          max-width: 1200px;
+        }
+      }
+
+      @media (max-width: 1200px) {
+        #productContainer,
+        #searchForm,
+        #filterContainer {
+          max-width: 900px;
+        }
+      }
+
+      @media (max-width: 900px) {
+        #productContainer,
+        #searchForm,
+        #filterContainer {
+          max-width: 600px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        #searchForm {
+          flex-direction: column;
         }
 
-        currentPage = 1; // Reset trang về 1 khi thay đổi filter
-        applyFilters();
-      });
-    });
-
-    // Lọc theo loại sản phẩm
-    document.querySelectorAll("#categoryFilters button").forEach(button => {
-      button.addEventListener("click", () => {
-        const isActive = button.classList.contains("active");
-
-        // Bỏ trạng thái active khỏi tất cả các nút
-        document.querySelectorAll("#categoryFilters button").forEach(btn => btn.classList.remove("active"));
-
-        if (!isActive) {
-          // Nếu nút chưa active, áp dụng bộ lọc
-          button.classList.add("active");
-          currentFilters.category = button.getAttribute("data-category");
-        } else {
-          // Nếu nút đang active, bỏ lọc
-          currentFilters.category = "";
+        #searchButton {
+          width: 100%;
         }
 
-        currentPage = 1; // Reset trang về 1 khi thay đổi filter
+        #productContainer {
+          grid-template-columns: 1fr;
+        }
+
+        .product-card {
+          margin: 0 auto;
+          max-width: 400px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Xóa sản phẩm</h1>
+
+    <div id="searchForm">
+      <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." />
+      <button id="searchButton">Tìm kiếm</button>
+    </div>
+
+    <div id="filterContainer">
+      <h3>Giá</h3>
+      <div id="priceFilters">
+        <button data-min="0" data-max="2000000">Dưới 2 triệu</button>
+        <button data-min="4000000" data-max="7000000">Từ 4-7 triệu</button>
+        <button data-min="20000000" data-max="">Trên 20 triệu</button>
+      </div>
+
+      <h3>Loại</h3>
+      <div id="categoryFilters">
+        <button data-category="CPUX">CPU</button>
+        <button data-category="RAMX">RAM</button>
+        <button data-category="SSDX">Ổ cứng/SSD</button>
+        <button data-category="GPUX">Card đồ họa (GPU)</button>
+        <button data-category="MAIN">Bo mạch chủ (Mainboard)</button>
+        <button data-category="PSUX">Nguồn (PSU)</button>
+        <button data-category="CASE">Vỏ case</button>
+        <button data-category="COOL">Tản nhiệt</button>
+        <button data-category="KEYB">Bàn phím</button>
+        <button data-category="MOUS">Chuột</button>
+        <button data-category="MONI">Màn hình</button>
+        <button data-category="SOUN">Card âm thanh</button>
+        <button data-category="NETW">Thiết bị mạng</button>
+      </div>
+    </div>
+
+    <div id="productContainer"></div>
+
+    <div id="pagination-controls">
+      <button id="prevPage">Trang trước</button>
+      <span id="pagination"></span>
+      <button id="nextPage">Trang sau</button>
+    </div>
+
+    <!-- Modal xác nhận -->
+    <div id="confirmModal">
+      <div class="modal-content">
+        <p id="confirmMessage">Bạn có chắc muốn xóa sản phẩm này?</p>
+        <button id="confirmYes">Có</button>
+        <button id="confirmNo">Không</button>
+      </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+      let currentPage = 1;
+      const limit = 10;
+      let totalPages = 1;
+
+      let currentFilters = {
+        searchQuery: "",
+        minPrice: "",
+        maxPrice: "",
+        category: "",
+      };
+
+      // Áp dụng bộ lọc
+      function applyFilters() {
+        const params = new URLSearchParams();
+
+        if (currentFilters.minPrice) params.append("minPrice", currentFilters.minPrice);
+        if (currentFilters.maxPrice) params.append("maxPrice", currentFilters.maxPrice);
+        if (currentFilters.category) params.append("category", currentFilters.category);
+        if (currentFilters.searchQuery) params.append("searchQuery", currentFilters.searchQuery);
+
+        params.append("page", currentPage);
+        params.append("limit", limit);
+
+        fetchProducts(currentPage, params.toString());
+      }
+
+      // Tìm kiếm sản phẩm
+      document.getElementById("searchButton").addEventListener("click", () => {
+        const searchQuery = document.getElementById("searchInput").value.trim();
+        currentFilters.searchQuery = searchQuery; // Thêm thuộc tính tìm kiếm
+        currentPage = 1; // Reset trang về 1
         applyFilters();
       });
-    });
 
-    async function fetchProducts(page = 1, query = "") {
-      currentPage = page; // Cập nhật trang hiện tại
+      // Lọc theo giá
+      document.querySelectorAll("#priceFilters button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const isActive = button.classList.contains("active");
 
-      const res = await fetch(`/api/sanpham/filter?${query}`);
-      const data = await res.json();
-      renderCards(data.products);
-      renderPagination(data.total);
-    }
+          // Bỏ trạng thái active khỏi tất cả các nút
+          document.querySelectorAll("#priceFilters button").forEach((btn) => btn.classList.remove("active"));
 
-    function renderCards(products) {
-      const container = document.getElementById("productContainer");
-      container.innerHTML = "";
+          if (!isActive) {
+            // Nếu nút chưa active, áp dụng bộ lọc
+            button.classList.add("active");
+            currentFilters.minPrice = button.getAttribute("data-min");
+            currentFilters.maxPrice = button.getAttribute("data-max");
+          } else {
+            // Nếu nút đang active, bỏ lọc
+            currentFilters.minPrice = "";
+            currentFilters.maxPrice = "";
+          }
 
-      products.forEach(p => {
-        const imageUrl = p.image && p.image.trim() !== "" ? p.image : " images/Ram Corsair vengeance lpx 1x16gb.png";
+          currentPage = 1; // Reset trang về 1 khi thay đổi filter
+          applyFilters();
+        });
+      });
 
-        const card = document.createElement("div");
-        card.className = "product-card";
-        card.innerHTML = `
+      // Lọc theo loại sản phẩm
+      document.querySelectorAll("#categoryFilters button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const isActive = button.classList.contains("active");
+
+          // Bỏ trạng thái active khỏi tất cả các nút
+          document.querySelectorAll("#categoryFilters button").forEach((btn) => btn.classList.remove("active"));
+
+          if (!isActive) {
+            // Nếu nút chưa active, áp dụng bộ lọc
+            button.classList.add("active");
+            currentFilters.category = button.getAttribute("data-category");
+          } else {
+            // Nếu nút đang active, bỏ lọc
+            currentFilters.category = "";
+          }
+
+          currentPage = 1; // Reset trang về 1 khi thay đổi filter
+          applyFilters();
+        });
+      });
+
+      async function fetchProducts(page = 1, query = "") {
+        currentPage = page; // Cập nhật trang hiện tại
+
+        const res = await fetch(`/api/sanpham/filter?${query}`);
+        const data = await res.json();
+        renderCards(data.products);
+        renderPagination(data.total);
+      }
+
+      function getCategoryName(id) {
+        const categoryMap = {
+          CPUX: "CPU",
+          RAMX: "RAM",
+          SSDX: "Ổ cứng/SSD",
+          GPUX: "Card đồ họa (GPU)",
+          MAIN: "Bo mạch chủ (Mainboard)",
+          PSUX: "Nguồn (PSU)",
+          CASE: "Vỏ case",
+          COOL: "Tản nhiệt",
+          KEYB: "Bàn phím",
+          MOUS: "Chuột",
+          MONI: "Màn hình",
+          SOUN: "Card âm thanh",
+          NETW: "Thiết bị mạng",
+        };
+
+        // Lấy 4 ký tự đầu của ID
+        const categoryCode = id.substring(0, 4);
+        return categoryMap[categoryCode] || "-";
+      }
+
+      function renderCards(products) {
+        const container = document.getElementById("productContainer");
+        container.innerHTML = "";
+
+        products.forEach((p) => {
+          const imageUrl = p.image && p.image.trim() !== "" ? p.image : "images/i9 -14900k.png";
+          const categoryName = getCategoryName(p.id);
+
+          const card = document.createElement("div");
+          card.className = "product-card";
+          card.innerHTML = `
           <img src="${imageUrl}" alt="${p.name}" class="product-image">
           <h3>${p.name}</h3>
           <p class="price">${p.price.toLocaleString()} VND</p>
-          <p>Loại: ${p.category || "-"}</p>
+          <p>Loại: ${categoryName}</p>
           <p>Thương hiệu: ${p.brand || "-"}</p>
           <p>Bảo hành: ${p.warranty || "-"}</p>
           <button class="btn-delete" onclick="deleteProduct('${p.id}')">Xóa</button>
         `;
-        container.appendChild(card);
-      });
-    }
-
-    function renderPagination(totalItems) {
-      totalPages = Math.ceil(totalItems / limit);
-      document.getElementById("pagination").textContent = `Trang ${currentPage} / ${totalPages}`;
-    }
-
-    document.getElementById("prevPage").addEventListener("click", () => {
-      if (currentPage > 1) {
-        currentPage--; // Giảm số trang hiện tại
-        applyFilters(); // Gọi lại applyFilters để tải dữ liệu mới
-      }
-    });
-
-    document.getElementById("nextPage").addEventListener("click", () => {
-      if (currentPage < totalPages) {
-        currentPage++; // Tăng số trang hiện tại
-        applyFilters(); // Gọi lại applyFilters để tải dữ liệu mới
-      }
-    });
-
-    // Hàm hiển thị modal xác nhận trả về Promise kết quả
-    function customConfirm(message) {
-      return new Promise((resolve) => {
-        document.getElementById('confirmMessage').textContent = message;
-        document.getElementById('confirmModal').style.display = 'block';
-        document.getElementById('confirmYes').onclick = function() {
-          document.getElementById('confirmModal').style.display = 'none';
-          resolve(true);
-        };
-        document.getElementById('confirmNo').onclick = function() {
-          document.getElementById('confirmModal').style.display = 'none';
-          resolve(false);
-        };
-      });
-    }
-
-    // Cập nhật hàm deleteProduct sử dụng customConfirm
-    async function deleteProduct(productId) {
-      const confirmed = await customConfirm("Bạn có chắc muốn xóa sản phẩm này?");
-      if (!confirmed) return;
-
-      try {
-        const res = await fetch(`/api/sanpham/${productId}`, {
-          method: "DELETE",
+          container.appendChild(card);
         });
-
-        if (res.ok) {
-          showToast("Sản phẩm đã được xóa thành công!");
-          applyFilters(); // Làm mới danh sách sản phẩm
-        } else {
-          showToast("Không thể xóa sản phẩm.", true);
-        }
-      } catch (err) {
-        console.error(err);
-        showToast("Đã xảy ra lỗi khi xóa sản phẩm.", true);
       }
-    }
 
-    function showToast(message, isError = false) {
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.style.backgroundColor = isError ? "#f44336" : "#4caf50"; // Đỏ cho lỗi, xanh cho thành công
-      toast.className = "show";
+      function renderPagination(totalItems) {
+        totalPages = Math.ceil(totalItems / limit);
+        document.getElementById("pagination").textContent = `Trang ${currentPage} / ${totalPages}`;
+      }
 
-      setTimeout(() => {
-        toast.className = toast.className.replace("show", "");
-      }, 3000);
-    }
+      document.getElementById("prevPage").addEventListener("click", () => {
+        if (currentPage > 1) {
+          currentPage--; // Giảm số trang hiện tại
+          applyFilters(); // Gọi lại applyFilters để tải dữ liệu mới
+        }
+      });
 
-    fetchProducts(); // Gọi hàm fetchProducts khi trang được tải
-  </script>
-</body>
+      document.getElementById("nextPage").addEventListener("click", () => {
+        if (currentPage < totalPages) {
+          currentPage++; // Tăng số trang hiện tại
+          applyFilters(); // Gọi lại applyFilters để tải dữ liệu mới
+        }
+      });
 
+      // Hàm hiển thị modal xác nhận trả về Promise kết quả
+      function customConfirm(message) {
+        return new Promise((resolve) => {
+          document.getElementById("confirmMessage").textContent = message;
+          document.getElementById("confirmModal").style.display = "block";
+          document.getElementById("confirmYes").onclick = function () {
+            document.getElementById("confirmModal").style.display = "none";
+            resolve(true);
+          };
+          document.getElementById("confirmNo").onclick = function () {
+            document.getElementById("confirmModal").style.display = "none";
+            resolve(false);
+          };
+        });
+      }
+
+      // Cập nhật hàm deleteProduct sử dụng customConfirm
+      async function deleteProduct(productId) {
+        const confirmed = await customConfirm("Bạn có chắc muốn xóa sản phẩm này?");
+        if (!confirmed) return;
+
+        try {
+          const res = await fetch(`/api/sanpham/${productId}`, {
+            method: "DELETE",
+          });
+
+          if (res.ok) {
+            showToast("Sản phẩm đã được xóa thành công!");
+            applyFilters(); // Làm mới danh sách sản phẩm
+          } else {
+            showToast("Không thể xóa sản phẩm.", true);
+          }
+        } catch (err) {
+          console.error(err);
+          showToast("Đã xảy ra lỗi khi xóa sản phẩm.", true);
+        }
+      }
+
+      function showToast(message, isError = false) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.style.backgroundColor = isError ? "#dc3545" : "#28a745"; // Đỏ cho lỗi, xanh cho thành công
+        toast.className = "show";
+
+        setTimeout(() => {
+          toast.className = toast.className.replace("show", "");
+        }, 3000);
+      }
+
+      fetchProducts(); // Gọi hàm fetchProducts khi trang được tải
+    </script>
+  </body>
 </html>
