@@ -7,18 +7,22 @@ const port = 3000;
 
 const url = "mongodb://127.0.0.1:27017";
 const client = new MongoClient(url);
-const dbName = "config";
-const collectionName = "listProduct"; // Tên collection trong MongoDB
+const dbName = "productdb";
+const collectionName = "SanPham";
+
+// Tăng giới hạn kích thước request body lên 50mb (upload ảnh lớn hơn)
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // Cấu hình multer để lưu trữ ảnh trong thư mục 'public/images'
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, 'public', 'images'));  // Đường dẫn lưu ảnh
+    cb(null, path.join(__dirname, "public", "images")); // Đường dẫn lưu ảnh
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));  // Tạo tên ảnh duy nhất
-  }
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)); // Tạo tên ảnh duy nhất
+  },
 });
 
 const upload = multer({ storage: storage });
@@ -64,26 +68,26 @@ app.get("/addProducts", (req, res) => {
 });
 
 // API để thêm sản phẩm và xử lý ảnh
-app.post("/api/sanpham", upload.single("image"), async (req, res) => { 
+app.post("/api/sanpham", upload.single("image"), async (req, res) => {
   const { id, name, price, brand, warranty } = req.body;
-  const image = req.file ? `/images/${req.file.filename}` : '';
+  const image = req.file ? `/images/${req.file.filename}` : "";
 
   if (!id || !name || !price || !brand || !warranty) {
     return res.status(400).json({ error: "Vui lòng cung cấp đầy đủ thông tin sản phẩm!" });
   }
 
-  const newProduct = { 
-    id, 
-    name, 
-    price: parseInt(price), 
-    brand, 
-    warranty, 
-    image
+  const newProduct = {
+    id,
+    name,
+    price: parseInt(price),
+    brand,
+    warranty,
+    image,
   };
 
   for (const key in req.body) {
-    if (!['id', 'name', 'price', 'brand', 'warranty'].includes(key)) {
-      newProduct[key] = req.body[key];  // Nhét trực tiếp key-value vào object gốc
+    if (!["id", "name", "price", "brand", "warranty"].includes(key)) {
+      newProduct[key] = req.body[key]; // Nhét trực tiếp key-value vào object gốc
     }
   }
 
@@ -100,7 +104,6 @@ app.post("/api/sanpham", upload.single("image"), async (req, res) => {
     await client.close();
   }
 });
-
 
 // API để xóa sản phẩm
 app.delete("/api/sanpham/:id", async (req, res) => {
@@ -192,10 +195,7 @@ app.get("/api/sanpham/filter", async (req, res) => {
 
   // Tìm kiếm gần đúng theo tên hoặc thương hiệu
   if (search) {
-    query.$or = [
-      { name: { $regex: search, $options: 'i' } },
-      { brand: { $regex: search, $options: 'i' } }
-    ];
+    query.$or = [{ name: { $regex: search, $options: "i" } }, { brand: { $regex: search, $options: "i" } }];
   }
 
   try {
@@ -251,22 +251,22 @@ app.get("/api/sanpham/:id", async (req, res) => {
 // Các phần code khác trong script giữ nguyên ...
 
 async function deleteProduct(productId) {
-    if (confirm("Bạn có thật sự muốn xóa sản phẩm này không?")) {
-        try {
-            const res = await fetch(`/api/sanpham/${productId}`, {
-                method: "DELETE",
-            });
-            if (res.ok) {
-                showCardMessage("Sản phẩm đã được xóa!", "success");
-                applyFilters(); // Tải lại danh sách sản phẩm
-            } else {
-                showCardMessage("Không thể xóa sản phẩm.", "error");
-            }
-        } catch (error) {
-            console.error("Error deleting product:", error);
-            showCardMessage("Lỗi khi xóa sản phẩm.", "error");
-        }
+  if (confirm("Bạn có thật sự muốn xóa sản phẩm này không?")) {
+    try {
+      const res = await fetch(`/api/sanpham/${productId}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        showCardMessage("Sản phẩm đã được xóa!", "success");
+        applyFilters(); // Tải lại danh sách sản phẩm
+      } else {
+        showCardMessage("Không thể xóa sản phẩm.", "error");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      showCardMessage("Lỗi khi xóa sản phẩm.", "error");
     }
+  }
 }
 
 // Đảm bảo các function renderCards, renderPagination và applyFilters được đóng ngoặc và kết thúc đúng
