@@ -390,7 +390,6 @@
       function applyFilters() {
         const params = new URLSearchParams();
 
-        // Thêm các tham số lọc nếu có
         if (currentFilters.minPrice) params.append("minPrice", currentFilters.minPrice);
         if (currentFilters.maxPrice) params.append("maxPrice", currentFilters.maxPrice);
         if (currentFilters.category) params.append("category", currentFilters.category);
