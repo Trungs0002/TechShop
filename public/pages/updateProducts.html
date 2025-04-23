@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <title>Cập nhật sản phẩm</title>
     <style>
-      /* Reset và Base styles */
+      /* ===== KIỂU CĂN BẢN & KHỞI TẠO ===== */
       * {
         margin: 0;
         padding: 0;
@@ -19,7 +19,7 @@
         color: #333;
       }
 
-      /* Tiêu đề */
+      /* ===== KIỂU TIÊU ĐỀ ===== */
       h1 {
         text-align: center;
         margin: 30px 0;
@@ -28,7 +28,7 @@
         font-weight: 600;
       }
 
-      /* Form tìm kiếm */
+      /* ===== KIỂU FORM TÌM KIẾM ===== */
       #searchForm {
         max-width: 1200px;
         margin: 0 auto 30px;
@@ -68,7 +68,7 @@
         transform: translateY(-1px);
       }
 
-      /* Bộ lọc */
+      /* ===== KIỂU BỘ LỌC ===== */
       #filterContainer {
         max-width: 1200px;
         margin: 0 auto 40px;
@@ -114,7 +114,7 @@
         border-color: #0d6efd;
       }
 
-      /* Container sản phẩm */
+      /* ===== KIỂU CONTAINER SẢN PHẨM ===== */
       #productContainer {
         max-width: 1400px;
         margin: 0 auto;
@@ -124,7 +124,7 @@
         padding: 20px;
       }
 
-      /* Card sản phẩm */
+      /* ===== KIỂU CARD SẢN PHẨM ===== */
       .product-card {
         background-color: white;
         border-radius: 12px;
@@ -185,7 +185,7 @@
         transform: translateY(-2px);
       }
 
-      /* Phân trang */
+      /* ===== KIỂU PHÂN TRANG ===== */
       #pagination-controls {
         display: flex;
         justify-content: center;
@@ -222,7 +222,7 @@
         font-weight: 500;
       }
 
-      /* Form cập nhật */
+      /* ===== KIỂU FORM CẬP NHẬT ===== */
       #update-form-container {
         position: fixed;
         top: 0;
@@ -350,7 +350,7 @@
         transform: translateY(-2px);
       }
 
-      /* Toast Notification */
+      /* ===== KIỂU THÔNG BÁO TOAST ===== */
       #toast {
         visibility: hidden;
         min-width: 300px;
@@ -395,7 +395,7 @@
         }
       }
 
-      /* Responsive Design */
+      /* ===== THIẾT KẾ ĐÁP ỨNG ===== */
       @media (max-width: 1400px) {
         #productContainer {
           max-width: 1200px;
@@ -428,13 +428,16 @@
   </head>
 
   <body>
+    <!-- ===== PHẦN ĐẦU TRANG ===== -->
     <h1>Cập nhật sản phẩm</h1>
 
+    <!-- ===== FORM TÌM KIẾM ===== -->
     <div id="searchForm">
       <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." />
       <button id="searchButton">Tìm kiếm</button>
     </div>
 
+    <!-- ===== BỘ LỌC ===== -->
     <div id="filterContainer">
       <h3>Giá</h3>
       <div id="priceFilters">
@@ -461,14 +464,17 @@
       </div>
     </div>
 
+    <!-- ===== CONTAINER SẢN PHẨM ===== -->
     <div id="productContainer"></div>
 
+    <!-- ===== ĐIỀU KHIỂN PHÂN TRANG ===== -->
     <div id="pagination-controls">
       <button id="prevPage">Trang trước</button>
       <span id="pagination"></span>
       <button id="nextPage">Trang sau</button>
     </div>
 
+    <!-- ===== FORM CẬP NHẬT SẢN PHẨM ===== -->
     <div id="update-form-container">
       <div id="update-product-form">
         <h2>Cập nhật sản phẩm</h2>
@@ -540,9 +546,11 @@
       </div>
     </div>
 
+    <!-- ===== THÔNG BÁO TOAST ===== -->
     <div id="toast">Cập nhật sản phẩm thành công!</div>
 
     <script>
+      // ===== BIẾN & KHỞI TẠO =====
       let currentPage = 1;
       const limit = 10;
       let totalPages = 1;
@@ -554,6 +562,7 @@
         category: "",
       };
 
+      // ===== HÀM LỌC =====
       function applyFilters() {
         const params = new URLSearchParams();
 
@@ -568,7 +577,7 @@
         fetchProducts(currentPage, params.toString());
       }
 
-      // Xử lý sự kiện tìm kiếm
+      // ===== XỬ LÝ SỰ KIỆN TÌM KIẾM =====
       document.getElementById("searchButton").addEventListener("click", handleSearch);
       document.getElementById("searchInput").addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
@@ -583,6 +592,7 @@
         applyFilters();
       }
 
+      // ===== XỬ LÝ SỰ KIỆN LỌC GIÁ =====
       document.querySelectorAll("#priceFilters button").forEach((button) => {
         button.addEventListener("click", () => {
           // Nếu nút đã active, bỏ active và reset giá trị lọc
@@ -602,6 +612,7 @@
         });
       });
 
+      // ===== XỬ LÝ SỰ KIỆN LỌC LOẠI SẢN PHẨM =====
       document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll("#categoryFilters button").forEach((button) => {
           button.addEventListener("click", () => {
@@ -621,6 +632,7 @@
         });
       });
 
+      // ===== GỌI API =====
       async function fetchProducts(page = 1, query = "") {
         currentPage = page; // Cập nhật trang hiện tại
 
@@ -630,6 +642,7 @@
         renderPagination(data.total);
       }
 
+      // ===== ÁNH XẠ DANH MỤC =====
       function getCategoryName(id) {
         const categoryMap = {
           CPUX: "CPU",
@@ -652,6 +665,7 @@
         return categoryMap[categoryCode] || "-";
       }
 
+      // ===== HÀM HIỂN THỊ =====
       function renderCards(products) {
         const container = document.getElementById("productContainer");
         container.innerHTML = "";
@@ -680,6 +694,7 @@
         document.getElementById("pagination").textContent = `Trang ${currentPage} / ${totalPages}`;
       }
 
+      // ===== XỬ LÝ SỰ KIỆN PHÂN TRANG =====
       document.getElementById("prevPage").addEventListener("click", () => {
         if (currentPage > 1) {
           currentPage--; // Giảm số trang hiện tại
@@ -694,6 +709,7 @@
         }
       });
 
+      // ===== HÀM CẬP NHẬT SẢN PHẨM =====
       async function updateProduct(productId) {
         try {
           // Lấy thông tin sản phẩm hiện tại
@@ -717,7 +733,8 @@
           // Hiển thị hình ảnh hiện tại nếu có
           if (product.image) {
             document.getElementById("update-image").value = product.image;
-            document.getElementById("current-image-container").innerHTML = `<img src="${product.image}" alt="${product.name}" style="max-width: 200px; max-height: 200px;">`;
+            document.getElementById("current-image-container").innerHTML = `<img src="${product.image}" alt="${product.name}" 
+            style="max-width: 200px; max-height: 200px;">`;
           } else {
             document.getElementById("update-image").value = "";
             document.getElementById("current-image-container").innerHTML = "";
@@ -728,27 +745,27 @@
         }
       }
 
-      // Xử lý sự kiện upload ảnh mới
+      // ===== XỬ LÝ SỰ KIỆN TẢI ẢNH =====
       document.getElementById("update-image-upload").addEventListener("change", function () {
         const file = this.files[0];
         if (!file) return;
 
         const reader = new FileReader();
         reader.onload = function (e) {
-          document.getElementById("update-image").value = e.target.result; // lưu base64 vào hidden input
+          document.getElementById("update-image").value = e.target.result;
           document.getElementById("current-image-container").innerHTML = `<img src="${e.target.result}" alt="Hình ảnh mới" style="max-width: 200px; max-height: 200px;">`;
         };
         reader.readAsDataURL(file);
       });
 
-      // Xử lý sự kiện hủy cập nhật
+      // ===== XỬ LÝ SỰ KIỆN HỦY CẬP NHẬT =====
       document.getElementById("cancel-update-btn").addEventListener("click", () => {
         document.getElementById("update-form-container").style.display = "none";
-        // Reset input file
+        // Reset input file image
         document.getElementById("update-image-upload").value = "";
       });
 
-      // Xử lý sự kiện lưu cập nhật
+      // ===== XỬ LÝ SỰ KIỆN LƯU CẬP NHẬT =====
       document.getElementById("save-update-btn").addEventListener("click", async () => {
         const id = document.getElementById("update-id").value;
         const name = document.getElementById("update-name").value;
@@ -790,6 +807,7 @@
         }
       });
 
+      // ===== HÀM HIỂN THỊ THÔNG BÁO TOAST =====
       function showToast(message) {
         const toast = document.getElementById("toast");
 
@@ -813,6 +831,7 @@
         }, 3000);
       }
 
+      // ===== TẢI DỮ LIỆU BAN ĐẦU =====
       fetchProducts();
     </script>
   </body>
