@@ -436,21 +436,21 @@
       const limit = 10;
       let totalPages = 1;
 
-    let currentFilters = {
-      searchQuery: "",
-      minPrice: "",
-      maxPrice: "",
-      category: ""
-    };
+      let currentFilters = {
+        search: "",
+        minPrice: "",
+        maxPrice: "",
+        category: ""
+      };
 
       // Áp dụng bộ lọc
       function applyFilters() {
         const params = new URLSearchParams();
 
-      if (currentFilters.minPrice) params.append("minPrice", currentFilters.minPrice);
-      if (currentFilters.maxPrice) params.append("maxPrice", currentFilters.maxPrice);
-      if (currentFilters.category) params.append("category", currentFilters.category);
-      if (currentFilters.searchQuery) params.append("searchQuery", currentFilters.searchQuery);
+        if (currentFilters.minPrice) params.append("minPrice", currentFilters.minPrice);
+        if (currentFilters.maxPrice) params.append("maxPrice", currentFilters.maxPrice);
+        if (currentFilters.category) params.append("category", currentFilters.category);
+        if (currentFilters.search) params.append("search", currentFilters.search);
 
         params.append("page", currentPage);
         params.append("limit", limit);
@@ -458,13 +458,13 @@
         fetchProducts(currentPage, params.toString());
       }
 
-    // Tìm kiếm sản phẩm
-    document.getElementById('searchButton').addEventListener('click', () => {
-      const searchQuery = document.getElementById('searchInput').value.trim();
-      currentFilters.searchQuery = searchQuery; // Thêm thuộc tính tìm kiếm
-      currentPage = 1; // Reset trang về 1
-      applyFilters();
-    });
+      // Tìm kiếm sản phẩm
+      document.getElementById('searchButton').addEventListener('click', () => {
+        const searchQuery = document.getElementById('searchInput').value.trim();
+        currentFilters.search = searchQuery;
+        currentPage = 1;
+        applyFilters();
+      });
 
       // Lọc theo giá
       document.querySelectorAll("#priceFilters button").forEach((button) => {
@@ -639,3 +639,4 @@
 </body>
 
 </html>
+``` 
