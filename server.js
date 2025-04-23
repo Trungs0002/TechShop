@@ -7,8 +7,8 @@ const port = 3000;
 
 const url = "mongodb://127.0.0.1:27017";
 const client = new MongoClient(url);
-const dbName = "productdb";
-const collectionName = "SanPham";
+const dbName = "config";
+const collectionName = "product";
 
 // Cấu hình multer để lưu trữ ảnh trong thư mục 'public/images'
 const storage = multer.diskStorage({
@@ -191,7 +191,10 @@ app.get("/api/sanpham/filter", async (req, res) => {
 
   // Tìm kiếm gần đúng theo tên hoặc thương hiệu
   if (search) {
-    query.$or = [{ name: { $regex: search, $options: "i" } }, { brand: { $regex: search, $options: "i" } }];
+    query.$or = [
+      { name: { $regex: search, $options: "i" } }, 
+      { brand: { $regex: search, $options: "i" } }
+    ];
   }
 
   try {
@@ -200,7 +203,12 @@ app.get("/api/sanpham/filter", async (req, res) => {
     const collection = db.collection(collectionName);
 
     const skip = (parseInt(page) - 1) * parseInt(limit); // Tính số lượng bản ghi cần bỏ qua
-    const products = await collection.find(query).sort({ price: -1 }).skip(skip).limit(parseInt(limit)).toArray();
+    const products = await collection
+    .find(query)
+    .sort({ price: -1 })
+    .skip(skip)
+    .limit(parseInt(limit))
+    .toArray();
     const total = await collection.countDocuments(query);
 
     res.json({ products, total });
@@ -212,7 +220,7 @@ app.get("/api/sanpham/filter", async (req, res) => {
   }
 });
 
-// Route để trả về updateProducts.html
+// Route để trả về updateProducts.html  
 app.get("/updateProducts", (req, res) => {
   res.sendFile(path.join(__dirname, "public/pages", "updateProducts.html"));
 });
