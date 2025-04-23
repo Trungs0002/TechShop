@@ -310,7 +310,6 @@
         params.append("page", currentPage);
         params.append("limit", limit);
 
-        console.log(`/api/sanpham/filter?${params.toString()}`); // Debug URL
         fetchProducts(currentPage, params.toString());
       }
 
