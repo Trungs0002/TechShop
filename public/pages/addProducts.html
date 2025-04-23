@@ -389,68 +389,64 @@ document.getElementById('add-many-product-btn').addEventListener('click', () => 
     document.getElementById('file-upload').click();
 });
 
-document.getElementById('file-upload').addEventListener('change', function () {
+document.getElementById('file-upload').addEventListener('change', function() {
     const file = this.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = function(e) {
         try {
             const content = e.target.result;
             let products = [];
 
             if (file.name.endsWith('.json')) {
-                const json = JSON.parse(content);
-
-                // Hỗ trợ cả file mảng và bán cấu trúc
-                if (Array.isArray(json)) {
-                    products = json;
-                } else {
-                    const arrayLikeKey = Object.keys(json).find(k => Array.isArray(json[k]));
-                    products = arrayLikeKey ? json[arrayLikeKey] : [json];
-                }
+                products = JSON.parse(content);
+            } else if (file.name.endsWith('.csv')) {
+                const lines = content.split('\n').filter(line => line.trim());
+                const headers = lines[0].split(',');
+                products = lines.slice(1).map(line => {
+                    const values = line.split(',');
+                    return headers.reduce((obj, h, i) => {
+                        obj[h.trim()] = values[i]?.trim();
+                        return obj;
+                    }, {});
+                });
             }
 
             if (!Array.isArray(products)) throw new Error('Dữ liệu không hợp lệ');
             if (!confirm(`Đã tải ${products.length} sản phẩm. Bạn có muốn thêm không?`)) return;
 
-            products.forEach((p, i) => {
-                try {
-                    const prefix = p.id?.match(/^[A-Z]+X/)?.[0] || (p.category?.normalize("NFD").replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase() + 'X') || 'PRDX';
-                    const id = p.id || generateNextId(prefix);
+            products.forEach(p => {
+                const prefix = p.id?.match(/^[A-Z]+X/)?.[0] || p.category?.normalize("NFD").replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase() + 'X';
+                const id = p.id || generateNextId(prefix);
+                const product = {
+                    id,
+                    name: p.name,
+                    price: parseFloat(p.price),
+                    brand: p.brand,
+                    warranty: p.warranty,
+                    image: p.image || ''
+                };
 
-                    const product = {
-                        id,
-                        name: p.name || `Sản phẩm ${i + 1}`,
-                        price: parseFloat(p.price) || 0,
-                        brand: p.brand || 'Không rõ',
-                        warranty: p.warranty || 'Không rõ',
-                        image: p.image || 'images/i9 -14900k.png'
-                    };
-
-                    fetch('/api/sanpham', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(product)
-                    })
-                    .then(res => res.json())
-                    .then(added => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td><img src="${added.image}" style="width: 80px; height: auto;"></td>
-                            <td>${added.id}</td>
-                            <td>${added.name}</td>
-                            <td>${parseFloat(added.price).toLocaleString()} VND</td>
-                            <td>${added.brand}</td>
-                            <td>${added.warranty}</td>
-                        `;
-                        document.getElementById('product-list').appendChild(row);
-                    });
-                } catch (err) {
-                    console.warn(`Lỗi khi xử lý sản phẩm số ${i + 1}: ${err.message}`);
-                }
+                fetch('/api/sanpham', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(product)
+                })
+                .then(res => res.json())
+                .then(added => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><img src="${added.image || 'images/i9 -14900k.png'}" style="width: 80px; height: auto;"></td>
+                        <td>${added.id}</td>
+                        <td>${added.name}</td>
+                        <td>${parseFloat(added.price).toLocaleString()} VND</td>
+                        <td>${added.brand}</td>
+                        <td>${added.warranty}</td>
+                    `;
+                    document.getElementById('product-list').appendChild(row);
+                });
             });
-
         } catch (err) {
             alert('Không thể đọc file: ' + err.message);
         }
