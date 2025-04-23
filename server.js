@@ -10,10 +10,6 @@ const client = new MongoClient(url);
 const dbName = "productdb";
 const collectionName = "SanPham";
 
-// Tăng giới hạn kích thước request body lên 50mb (upload ảnh lớn hơn)
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
-
 // Cấu hình multer để lưu trữ ảnh trong thư mục 'public/images'
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -30,8 +26,8 @@ const upload = multer({ storage: storage });
 // Middleware để phục vụ file tĩnh (HTML, CSS, Images)
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public/images")));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // Kết nối MongoDB
 async function connectToMongoDB() {
