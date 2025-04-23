@@ -1,416 +1,424 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cập nhật sản phẩm</title>
+    <style>
+      /* Body */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Cập nhật sản phẩm</title>
-  <style>
-    /* Body */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
+      /* Tiêu đề */
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
 
-    /* Tiêu đề */
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+      /* Form tìm kiếm */
+      #searchForm {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
 
-    /* Form tìm kiếm */
-    #searchForm {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
+      #searchForm input,
+      #searchForm button {
+        padding: 10px;
+        font-size: 14px;
+      }
 
-    #searchForm input,
-    #searchForm button {
-      padding: 10px;
-      font-size: 14px;
-    }
+      /* Container sản phẩm */
+      #productContainer {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+      }
 
-    /* Container sản phẩm */
-    #productContainer {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
+      /* Card sản phẩm */
+      .product-card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
 
-    /* Card sản phẩm */
-    .product-card {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 16px;
-      background-color: #fff;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
+      .product-card h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
 
-    .product-card h3 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
+      .product-card p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #555;
+      }
 
-    .product-card p {
-      margin: 5px 0;
-      font-size: 14px;
-      color: #555;
-    }
+      .product-card .price {
+        font-size: 16px;
+        font-weight: bold;
+        color: #007bff;
+      }
 
-    .product-card .price {
-      font-size: 16px;
-      font-weight: bold;
-      color: #007bff;
-    }
+      .product-card img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
 
-    .product-card img {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
+      /* Pagination controls */
+      #pagination-controls {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 20px;
+      }
 
-    /* Pagination controls */
-    #pagination-controls {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 20px;
-    }
+      #pagination-controls button {
+        padding: 10px 20px;
+        font-size: 14px;
+        cursor: pointer;
+      }
 
-    #pagination-controls button {
-      padding: 10px 20px;
-      font-size: 14px;
-      cursor: pointer;
-    }
+      /* Bộ lọc */
+      #filterContainer {
+        margin-bottom: 20px;
+      }
 
-    /* Bộ lọc */
-    #filterContainer {
-      margin-bottom: 20px;
-    }
+      #filterContainer h3 {
+        margin: 10px 0;
+      }
 
-    #filterContainer h3 {
-      margin: 10px 0;
-    }
+      #filterContainer div {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
 
-    #filterContainer div {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
+      #filterContainer button {
+        padding: 10px 15px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
 
-    #filterContainer button {
-      padding: 10px 15px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background-color: #f8f9fa;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+      #filterContainer button:hover {
+        background-color: #007bff;
+        color: white;
+      }
 
-    #filterContainer button:hover {
-      background-color: #007bff;
-      color: white;
-    }
+      #filterContainer button.active {
+        background-color: #007bff;
+        color: white;
+      }
 
-    #filterContainer button.active {
-      background-color: #007bff;
-      color: white;
-    }
+      /* Nút cập nhật */
+      .btn-update {
+        padding: 5px 10px;
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
 
-    /* Nút cập nhật */
-    .btn-update {
-      padding: 5px 10px;
-      background-color: #f44336;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+      .btn-update:hover {
+        background-color: #e53935;
+      }
 
-    .btn-update:hover {
-      background-color: #e53935;
-    }
+      /* Form cập nhật */
+      #update-form-container {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 100;
+      }
 
-    /* Form cập nhật */
-    #update-form-container {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 100;
-    }
+      #update-product-form {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 600px;
+        margin: 50px auto;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      }
 
-    #update-product-form {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 600px;
-      margin: 50px auto;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    }
+      #update-product-form h2 {
+        text-align: center;
+      }
 
-    #update-product-form h2 {
-      text-align: center;
-    }
+      #update-product-form table {
+        width: 100%;
+      }
 
-    #update-product-form table {
-      width: 100%;
-    }
+      #update-product-form label {
+        display: block;
+        margin-bottom: 5px;
+      }
 
-    #update-product-form label {
-      display: block;
-      margin-bottom: 5px;
-    }
+      #update-product-form input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
 
-    #update-product-form input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+      #update-product-form input[type="file"] {
+        padding: 5px;
+      }
 
-    #update-product-form input[type="file"] {
-      padding: 5px;
-    }
+      #update-product-form button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
 
-    #update-product-form button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+      #save-update-btn {
+        background-color: #4caf50;
+        color: white;
+      }
 
-    #save-update-btn {
-      background-color: #4caf50;
-      color: white;
-    }
+      #save-update-btn:hover {
+        background-color: #45a049;
+      }
 
-    #save-update-btn:hover {
-      background-color: #45a049;
-    }
+      #cancel-update-btn {
+        background-color: #f44336;
+        color: white;
+      }
 
-    #cancel-update-btn {
-      background-color: #f44336;
-      color: white;
-    }
+      #cancel-update-btn:hover {
+        background-color: #e53935;
+      }
 
-    #cancel-update-btn:hover {
-      background-color: #e53935;
-    }
+      #current-image-container img {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 4px;
+        margin-top: 10px;
+      }
 
-    #current-image-container img {
-      max-width: 200px;
-      max-height: 200px;
-      border-radius: 4px;
-      margin-top: 10px;
-    }
+      /* Toast Notification */
+      #toast {
+        visibility: hidden;
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #4caf50;
+        color: white;
+        text-align: center;
+        border-radius: 4px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1000;
+        left: 50%;
+        bottom: 30px;
+        font-size: 17px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: visibility 0s, opacity 0.5s ease-in-out;
+      }
 
-    /* Toast Notification */
-    #toast {
-      visibility: hidden;
-      min-width: 250px;
-      margin-left: -125px;
-      background-color: #4caf50;
-      color: white;
-      text-align: center;
-      border-radius: 4px;
-      padding: 16px;
-      position: fixed;
-      z-index: 1000;
-      left: 50%;
-      bottom: 30px;
-      font-size: 17px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      transition: visibility 0s, opacity 0.5s ease-in-out;
-    }
+      #toast.show {
+        visibility: visible;
+        opacity: 1;
+      }
 
-    #toast.show {
-      visibility: visible;
-      opacity: 1;
-    }
+      #toast.hide {
+        opacity: 0;
+      }
+    </style>
+  </head>
 
-    #toast.hide {
-      opacity: 0;
-    }
-  </style>
-</head>
+  <body>
+    <h1>Cập nhật sản phẩm</h1>
 
-<body>
-  <h1>Cập nhật sản phẩm</h1>
+    <div id="filterContainer">
+      <h3>Giá</h3>
+      <div id="priceFilters">
+        <button data-min="0" data-max="2000000">Dưới 2 triệu</button>
+        <button data-min="3999999" data-max="7000001">Từ 4-7 triệu</button>
+        <button data-min="19999999" data-max="">Trên 20 triệu</button>
+      </div>
 
-  <div id="filterContainer">
-    <h3>Giá</h3>
-    <div id="priceFilters">
-      <button data-min="0" data-max="2000000">Dưới 2 triệu</button>
-      <button data-min="4000000" data-max="7000000">Từ 4-7 triệu</button>
-      <button data-min="20000000" data-max="">Trên 20 triệu</button>
-    </div>
-
-    <h3>Loại</h3>
-    <div id="categoryFilters">
-      <button data-category="CPUX">CPU</button>
-      <button data-category="RAMX">RAM</button>
-      <button data-category="SSDX">Ổ cứng/SSD</button>
-      <button data-category="GPUX">Card đồ họa (GPU)</button>
-      <button data-category="MAIN">Bo mạch chủ (Mainboard)</button>
-      <button data-category="PSUX">Nguồn (PSU)</button>
-      <button data-category="CASE">Vỏ case</button>
-      <button data-category="COOL">Tản nhiệt</button>
-      <button data-category="KEYB">Bàn phím</button>
-      <button data-category="MOUS">Chuột</button>
-      <button data-category="MONI">Màn hình</button>
-      <button data-category="SOUN">Card âm thanh</button>
-      <button data-category="NETW">Thiết bị mạng</button>
-    </div>
-  </div>
-
-  <div id="productContainer"></div>
-
-  <div id="pagination-controls">
-    <button id="prevPage">Trang trước</button>
-    <span id="pagination"></span>
-    <button id="nextPage">Trang sau</button>
-  </div>
-
-  <!-- Thêm form cập nhật vào sau div pagination-controls -->
-  <div id="update-form-container"
-    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 100">
-    <div id="update-product-form"
-      style="background-color: white; padding: 20px; border-radius: 8px; max-width: 600px; margin: 50px auto; box-shadow: 0 0 20px rgba(0, 0, 0, 0.3)">
-      <h2>Cập nhật sản phẩm</h2>
-      <table style="width: 100%">
-        <tr>
-          <td><label for="update-id">ID:</label></td>
-          <td><input type="text" id="update-id" disabled /></td>
-        </tr>
-        <tr>
-          <td><label for="update-name">Tên:</label></td>
-          <td><input type="text" id="update-name" placeholder="Tên sản phẩm" required /></td>
-        </tr>
-        <tr>
-          <td><label for="update-price">Giá:</label></td>
-          <td><input type="number" id="update-price" placeholder="Giá" required /></td>
-        </tr>
-        <tr>
-          <td><label for="update-brand">Thương hiệu:</label></td>
-          <td><input type="text" id="update-brand" placeholder="Thương hiệu" list="brand-list" required /></td>
-        </tr>
-        <tr>
-          <td><label for="update-warranty">Bảo hành:</label></td>
-          <td><input type="text" id="update-warranty" placeholder="Bảo hành" list="warranty-list" required /></td>
-        </tr>
-        <tr>
-          <td><label for="update-image-upload">Hình ảnh:</label></td>
-          <td>
-            <input type="file" id="update-image-upload" accept="image/*" />
-            <input type="hidden" id="update-image" />
-            <div id="current-image-container" style="margin-top: 10px"></div>
-          </td>
-        </tr>
-      </table>
-      <div style="text-align: center; margin-top: 15px">
-        <button id="save-update-btn"
-          style="padding: 10px 20px; background-color: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px">Cập
-          nhật</button>
-        <button id="cancel-update-btn"
-          style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer">Hủy</button>
+      <h3>Loại</h3>
+      <div id="categoryFilters">
+        <button data-category="CPUX">CPU</button>
+        <button data-category="RAMX">RAM</button>
+        <button data-category="SSDX">Ổ cứng/SSD</button>
+        <button data-category="GPUX">Card đồ họa (GPU)</button>
+        <button data-category="MAIN">Bo mạch chủ (Mainboard)</button>
+        <button data-category="PSUX">Nguồn (PSU)</button>
+        <button data-category="CASE">Vỏ case</button>
+        <button data-category="COOL">Tản nhiệt</button>
+        <button data-category="KEYB">Bàn phím</button>
+        <button data-category="MOUS">Chuột</button>
+        <button data-category="MONI">Màn hình</button>
+        <button data-category="SOUN">Card âm thanh</button>
+        <button data-category="NETW">Thiết bị mạng</button>
       </div>
     </div>
-  </div>
 
-  <datalist id="brand-list">
-    <option value="ASUS"></option>
-    <option value="MSI"></option>
-    <option value="GIGABYTE"></option>
-    <option value="Corsair"></option>
-    <option value="Logitech"></option>
-  </datalist>
+    <div id="productContainer"></div>
 
-  <datalist id="warranty-list">
-    <option value="12 tháng"></option>
-    <option value="24 tháng"></option>
-    <option value="36 tháng"></option>
-  </datalist>
+    <div id="pagination-controls">
+      <button id="prevPage">Trang trước</button>
+      <span id="pagination"></span>
+      <button id="nextPage">Trang sau</button>
+    </div>
 
-  <div id="toast">Cập nhật sản phẩm thành công!</div>
+    <!-- Thêm form cập nhật vào sau div pagination-controls -->
+    <div id="update-form-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 100">
+      <div id="update-product-form" style="background-color: white; padding: 20px; border-radius: 8px; max-width: 600px; margin: 50px auto; box-shadow: 0 0 20px rgba(0, 0, 0, 0.3)">
+        <h2>Cập nhật sản phẩm</h2>
+        <table style="width: 100%">
+          <tr>
+            <td><label for="update-id">ID:</label></td>
+            <td><input type="text" id="update-id" disabled /></td>
+          </tr>
+          <tr>
+            <td><label for="update-name">Tên:</label></td>
+            <td><input type="text" id="update-name" placeholder="Tên sản phẩm" required /></td>
+          </tr>
+          <tr>
+            <td><label for="update-price">Giá:</label></td>
+            <td><input type="number" id="update-price" placeholder="Giá" required /></td>
+          </tr>
+          <tr>
+            <td><label for="update-brand">Thương hiệu:</label></td>
+            <td><input type="text" id="update-brand" placeholder="Thương hiệu" list="brand-list" required /></td>
+          </tr>
+          <tr>
+            <td><label for="update-warranty">Bảo hành:</label></td>
+            <td><input type="text" id="update-warranty" placeholder="Bảo hành" list="warranty-list" required /></td>
+          </tr>
+          <tr>
+            <td><label for="update-image-upload">Hình ảnh:</label></td>
+            <td>
+              <input type="file" id="update-image-upload" accept="image/*" />
+              <input type="hidden" id="update-image" />
+              <div id="current-image-container" style="margin-top: 10px"></div>
+            </td>
+          </tr>
+        </table>
+        <div style="text-align: center; margin-top: 15px">
+          <button id="save-update-btn" style="padding: 10px 20px; background-color: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px">Cập nhật</button>
+          <button id="cancel-update-btn" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer">Hủy</button>
+        </div>
+      </div>
+    </div>
 
-  <!-- Thêm các hàm xử lý cập nhật vào trong thẻ script -->
+    <datalist id="brand-list">
+      <option value="ASUS"></option>
+      <option value="MSI"></option>
+      <option value="GIGABYTE"></option>
+      <option value="Corsair"></option>
+      <option value="Logitech"></option>
+    </datalist>
 
-  <script>
-    let currentPage = 1;
-    const limit = 10;
-    let totalPages = 1;
+    <datalist id="warranty-list">
+      <option value="12 tháng"></option>
+      <option value="24 tháng"></option>
+      <option value="36 tháng"></option>
+    </datalist>
 
-    let currentFilters = {
-      minPrice: "",
-      maxPrice: "",
-      category: "",
-    };
+    <div id="toast">Cập nhật sản phẩm thành công!</div>
 
-    function applyFilters() {
-      const params = new URLSearchParams({
-        minPrice: currentFilters.minPrice,
-        maxPrice: currentFilters.maxPrice,
-        category: currentFilters.category,
-        page: currentPage,
-        limit,
-      });
+    <!-- Thêm các hàm xử lý cập nhật vào trong thẻ script -->
 
-      console.log(`/api/sanpham/filter?${params.toString()}`); // Debug URL
-      fetchProducts(currentPage, params.toString());
-    }
+    <script>
+      let currentPage = 1;
+      const limit = 10;
+      let totalPages = 1;
 
-    document.querySelectorAll("#priceFilters button").forEach((button) => {
-      button.addEventListener("click", () => {
-        document.querySelectorAll("#priceFilters button").forEach((btn) => btn.classList.remove("active"));
-        button.classList.add("active");
+      let currentFilters = {
+        minPrice: "",
+        maxPrice: "",
+        category: "",
+      };
 
-        currentFilters.minPrice = button.getAttribute("data-min");
-        currentFilters.maxPrice = button.getAttribute("data-max");
-        applyFilters();
-      });
-    });
+      function applyFilters() {
+        const params = new URLSearchParams({
+          minPrice: currentFilters.minPrice,
+          maxPrice: currentFilters.maxPrice,
+          category: currentFilters.category,
+          page: currentPage,
+          limit,
+        });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      document.querySelectorAll("#categoryFilters button").forEach((button) => {
+        console.log(`/api/sanpham/filter?${params.toString()}`); // Debug URL
+        fetchProducts(currentPage, params.toString());
+      }
+
+      document.querySelectorAll("#priceFilters button").forEach((button) => {
         button.addEventListener("click", () => {
-          document.querySelectorAll("#categoryFilters button").forEach((btn) => btn.classList.remove("active"));
-          button.classList.add("active");
-
-          currentFilters.category = button.getAttribute("data-category");
-
+          // Nếu nút đã active, bỏ active và reset giá trị lọc
+          if (button.classList.contains("active")) {
+            button.classList.remove("active");
+            currentFilters.minPrice = "";
+            currentFilters.maxPrice = "";
+          } else {
+            // Nếu chưa active, bỏ active các nút khác và active nút hiện tại
+            document.querySelectorAll("#priceFilters button").forEach((btn) => btn.classList.remove("active"));
+            button.classList.add("active");
+            currentFilters.minPrice = button.getAttribute("data-min");
+            currentFilters.maxPrice = button.getAttribute("data-max");
+          }
+          currentPage = 1; // Reset trang khi thay đổi bộ lọc giá
           applyFilters();
         });
       });
-    });
 
-    async function fetchProducts(page = 1, query = "") {
-      currentPage = page; // Cập nhật trang hiện tại
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("#categoryFilters button").forEach((button) => {
+          button.addEventListener("click", () => {
+            // Nếu nút đã active, bỏ active và reset giá trị lọc
+            if (button.classList.contains("active")) {
+              button.classList.remove("active");
+              currentFilters.category = "";
+            } else {
+              // Nếu chưa active, bỏ active các nút khác và active nút hiện tại
+              document.querySelectorAll("#categoryFilters button").forEach((btn) => btn.classList.remove("active"));
+              button.classList.add("active");
+              currentFilters.category = button.getAttribute("data-category");
+            }
+            currentPage = 1; // Reset trang khi thay đổi bộ lọc loại
+            applyFilters();
+          });
+        });
+      });
 
-      const res = await fetch(`/api/sanpham/filter?${query}`);
-      const data = await res.json();
-      renderCards(data.products);
-      renderPagination(data.total);
-    }
+      async function fetchProducts(page = 1, query = "") {
+        currentPage = page; // Cập nhật trang hiện tại
 
-    function renderCards(products) {
-      const container = document.getElementById("productContainer");
-      container.innerHTML = "";
+        const res = await fetch(`/api/sanpham/filter?${query}`);
+        const data = await res.json();
+        renderCards(data.products);
+        renderPagination(data.total);
+      }
 
-      products.forEach((p) => {
-        const imageUrl = p.image && p.image.trim() !== "" ? p.image : "images/i9 -14900k.png";
+      function renderCards(products) {
+        const container = document.getElementById("productContainer");
+        container.innerHTML = "";
 
-        const card = document.createElement("div");
-        card.className = "product-card";
-        card.innerHTML = `
+        products.forEach((p) => {
+          const imageUrl = p.image && p.image.trim() !== "" ? p.image : "images/i9 -14900k.png";
+
+          const card = document.createElement("div");
+          card.className = "product-card";
+          card.innerHTML = `
           <img src="${imageUrl}" alt="${p.name}" class="product-image">
           <h3>${p.name}</h3>
           <p class="price">${p.price.toLocaleString()} VND</p>
@@ -419,131 +427,146 @@
           <p>Bảo hành: ${p.warranty || "-"}</p>
           <button class="btn-update" onclick="updateProduct('${p.id}')">Cập nhật</button>
         `;
-        container.appendChild(card);
-      });
-    }
-
-    function renderPagination(totalItems) {
-      totalPages = Math.ceil(totalItems / limit);
-      document.getElementById("pagination").textContent = `Trang ${currentPage} / ${totalPages}`;
-    }
-
-    document.getElementById("prevPage").addEventListener("click", () => {
-      if (currentPage > 1) {
-        currentPage--; // Giảm số trang hiện tại
-        applyFilters(); // Gọi lại applyFilters để tải dữ liệu mới
-      }
-    });
-
-    document.getElementById("nextPage").addEventListener("click", () => {
-      if (currentPage < totalPages) {
-        currentPage++; // Tăng số trang hiện tại
-        applyFilters(); // Gọi lại applyFilters để tải dữ liệu mới
-      }
-    });
-
-    async function updateProduct(productId) {
-      try {
-        // Lấy thông tin sản phẩm hiện tại
-        const res = await fetch(`/api/sanpham/${productId}`);
-        if (!res.ok) {
-          throw new Error("Không thể lấy thông tin sản phẩm");
-        }
-        const product = await res.json();
-
-        // Hiển thị form cập nhật và điền thông tin hiện tại
-        document.getElementById("update-form-container").style.display = "block";
-        document.getElementById("update-id").value = product.id;
-        document.getElementById("update-name").value = product.name;
-        document.getElementById("update-price").value = product.price;
-        document.getElementById("update-brand").value = product.brand;
-        document.getElementById("update-warranty").value = product.warranty;
-
-        // Hiển thị hình ảnh hiện tại nếu có
-        if (product.image) {
-          document.getElementById("update-image").value = product.image;
-          document.getElementById("current-image-container").innerHTML = `<img src="${product.image}" alt="${product.name}" style="max-width: 200px; max-height: 200px;">`;
-        } else {
-          document.getElementById("update-image").value = "";
-          document.getElementById("current-image-container").innerHTML = "";
-        }
-      } catch (err) {
-        console.error(err);
-        alert("Không thể lấy thông tin sản phẩm.");
-      }
-    }
-
-    // Xử lý sự kiện upload ảnh mới
-    document.getElementById("update-image-upload").addEventListener("change", function () {
-      const file = this.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        document.getElementById("update-image").value = e.target.result; // lưu base64 vào hidden input
-        document.getElementById("current-image-container").innerHTML = `<img src="${e.target.result}" alt="Hình ảnh mới" style="max-width: 200px; max-height: 200px;">`;
-      };
-      reader.readAsDataURL(file);
-    });
-
-    // Xử lý sự kiện hủy cập nhật
-    document.getElementById("cancel-update-btn").addEventListener("click", () => {
-      document.getElementById("update-form-container").style.display = "none";
-    });
-
-    // Xử lý sự kiện lưu cập nhật
-    document.getElementById("save-update-btn").addEventListener("click", async () => {
-      const id = document.getElementById("update-id").value;
-      const name = document.getElementById("update-name").value;
-      const price = document.getElementById("update-price").value;
-      const brand = document.getElementById("update-brand").value;
-      const warranty = document.getElementById("update-warranty").value;
-      const image = document.getElementById("update-image").value;
-
-      if (!id || !name || !price || !brand || !warranty) {
-        alert("Vui lòng nhập đầy đủ thông tin!");
-        return;
-      }
-
-      try {
-        const res = await fetch(`/api/sanpham/${id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            price: parseFloat(price),
-            brand,
-            warranty,
-            image,
-          }),
+          container.appendChild(card);
         });
+      }
 
-        if (!res.ok) {
-          throw new Error("Không thể cập nhật sản phẩm");
+      function renderPagination(totalItems) {
+        totalPages = Math.ceil(totalItems / limit);
+        document.getElementById("pagination").textContent = `Trang ${currentPage} / ${totalPages}`;
+      }
+
+      document.getElementById("prevPage").addEventListener("click", () => {
+        if (currentPage > 1) {
+          currentPage--; // Giảm số trang hiện tại
+          applyFilters(); // Gọi lại applyFilters để tải dữ liệu mới
+        }
+      });
+
+      document.getElementById("nextPage").addEventListener("click", () => {
+        if (currentPage < totalPages) {
+          currentPage++; // Tăng số trang hiện tại
+          applyFilters(); // Gọi lại applyFilters để tải dữ liệu mới
+        }
+      });
+
+      async function updateProduct(productId) {
+        try {
+          // Lấy thông tin sản phẩm hiện tại
+          const res = await fetch(`/api/sanpham/${productId}`);
+          if (!res.ok) {
+            throw new Error("Không thể lấy thông tin sản phẩm");
+          }
+          const product = await res.json();
+
+          // Hiển thị form cập nhật và điền thông tin hiện tại
+          document.getElementById("update-form-container").style.display = "block";
+          document.getElementById("update-id").value = product.id;
+          document.getElementById("update-name").value = product.name;
+          document.getElementById("update-price").value = product.price;
+          document.getElementById("update-brand").value = product.brand;
+          document.getElementById("update-warranty").value = product.warranty;
+
+          // Hiển thị hình ảnh hiện tại nếu có
+          if (product.image) {
+            document.getElementById("update-image").value = product.image;
+            document.getElementById("current-image-container").innerHTML = `<img src="${product.image}" alt="${product.name}" style="max-width: 200px; max-height: 200px;">`;
+          } else {
+            document.getElementById("update-image").value = "";
+            document.getElementById("current-image-container").innerHTML = "";
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Không thể lấy thông tin sản phẩm.");
+        }
+      }
+
+      // Xử lý sự kiện upload ảnh mới
+      document.getElementById("update-image-upload").addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("update-image").value = e.target.result; // lưu base64 vào hidden input
+          document.getElementById("current-image-container").innerHTML = `<img src="${e.target.result}" alt="Hình ảnh mới" style="max-width: 200px; max-height: 200px;">`;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // Xử lý sự kiện hủy cập nhật
+      document.getElementById("cancel-update-btn").addEventListener("click", () => {
+        document.getElementById("update-form-container").style.display = "none";
+        // Reset input file
+        document.getElementById("update-image-upload").value = "";
+      });
+
+      // Xử lý sự kiện lưu cập nhật
+      document.getElementById("save-update-btn").addEventListener("click", async () => {
+        const id = document.getElementById("update-id").value;
+        const name = document.getElementById("update-name").value;
+        const price = document.getElementById("update-price").value;
+        const brand = document.getElementById("update-brand").value;
+        const warranty = document.getElementById("update-warranty").value;
+        const image = document.getElementById("update-image").value;
+
+        if (!id || !name || !price || !brand || !warranty) {
+          alert("Vui lòng nhập đầy đủ thông tin!");
+          return;
         }
 
-        showToast("Cập nhật sản phẩm thành công!");
-        document.getElementById("update-form-container").style.display = "none";
-        applyFilters(); // Tải lại danh sách sản phẩm
-      } catch (err) {
-        console.error(err);
-        alert("Đã xảy ra lỗi khi cập nhật sản phẩm.");
+        try {
+          const res = await fetch(`/api/sanpham/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name,
+              price: parseFloat(price),
+              brand,
+              warranty,
+              image,
+            }),
+          });
+
+          if (!res.ok) {
+            throw new Error("Không thể cập nhật sản phẩm");
+          }
+
+          showToast("Cập nhật sản phẩm thành công!");
+          document.getElementById("update-form-container").style.display = "none";
+          // Reset input file
+          document.getElementById("update-image-upload").value = "";
+          applyFilters(); // Tải lại danh sách sản phẩm
+        } catch (err) {
+          console.error(err);
+          alert("Đã xảy ra lỗi khi cập nhật sản phẩm.");
+        }
+      });
+
+      function showToast(message) {
+        const toast = document.getElementById("toast");
+
+        // Reset trạng thái của toast trước khi hiển thị thông báo mới
+        toast.style.visibility = "hidden";
+        toast.className = "";
+
+        // Đặt nội dung thông báo
+        toast.textContent = message;
+
+        // Hiển thị toast
+        toast.style.visibility = "visible";
+        toast.className = "show";
+
+        // Ẩn toast sau 3 giây
+        setTimeout(() => {
+          toast.className = "hide";
+          setTimeout(() => {
+            toast.style.visibility = "hidden";
+          }, 500);
+        }, 3000);
       }
-    });
 
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.className = "show";
-
-      setTimeout(() => {
-        toast.className = "hide";
-        setTimeout(() => (toast.style.visibility = "hidden"), 500);
-      }, 3000);
-    }
-
-    fetchProducts();
-  </script>
-</body>
-
+      fetchProducts();
+    </script>
+  </body>
 </html>
